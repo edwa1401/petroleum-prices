@@ -1,0 +1,109 @@
+[project]
+name = ""
+version = ""
+description = ""
+authors = [
+    {name = "edwa1401", email = "edwa14011977@gmail.com"},
+]
+dependencies = [
+    "requests>=2.31.0",
+    "ruff>=0.1.1",
+    "mypy>=1.6.1",
+    "django>=4.2.6",
+    "pytest>=7.4.2",
+    "django-extensions>=3.2.3",
+    "ipython>=8.16.1",
+    "django-stubs>=4.2.5",
+    "django-filter>=23.3",
+    "openpyxl>=3.1.2",
+    "pytest-testdox>=3.1.0",
+    "tree>=0.2.4",
+    "psycopg>=3.1.12",
+    "beautifulsoup4>=4.12.2",
+    "pytest-django>=4.6.0",
+    "xlrd>=2.0.1",
+    "types-requests>=2.31.0.10",
+    "dotenv>=0.0.5",
+    "python-dotenv>=1.0.0",
+    "types-beautifulsoup4>=4.12.0.7",
+]
+requires-python = ">=3.11"
+readme = "README.md"
+license = {text = "MIT"}
+
+
+[tool.mypy]
+plugins = ['mypy_django_plugin.main']
+ignore_missing_imports = false
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+exclude = '''(?x) (env\.|^migrations\.|^manage\.py$|^tests\.py$|^install-pdm\.py$)'''
+
+[[tool.mypy.overrides]]
+module = 'petroleum_prices.settings'
+disable_error_code = 'var-annotated'
+
+
+[[tool.mypy.overrides]]
+module = "django_extensions.*"
+ignore_missing_imports = true
+
+
+[tool.django-stubs]
+django_settings_module = 'petroleum_prices.settings'
+
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "test.settings"
+python_files = ["test_*.py", "*_test.py", "testing/python/*.py"]
+
+
+[tool.ruff]
+# Enable the pycodestyle (`E`) and Pyflakes (`F`) rules by default.
+# Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or
+# McCabe complexity (`C901`) by default.
+select = ["E", "F"]
+ignore = [] 
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+    "migrations",
+    "settings.py",
+    ]
+
+
+# Same as Black.
+line-length = 100
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+# Assume Python 3.11
+target-version = 'py311'
+
+
