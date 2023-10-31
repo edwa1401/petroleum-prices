@@ -16,7 +16,7 @@ from spimex_parser.shemas import Contract_sh, TradeDay_sh
 
 
 def save_contract(contract: Contract_sh) -> Contract:
-    return Contract.objects.create(
+    return Contract(
         code=contract.code,
         name=contract.code,
         base=contract.base,
@@ -36,11 +36,15 @@ def save_contract(contract: Contract_sh) -> Contract:
 
 def save_trade_day_to_db(trade_day: TradeDay_sh) -> None:
     
-    TradeDay.objects.create(day=trade_day.day)
+    trade_day_db = TradeDay(day=trade_day.day)
+    trade_day_db.save(force_insert=True)
+
     for section in trade_day.sections:
-        Section.objects.create(name=section.name, metric=section.metric)
+        section_db = Section(name=section.name, metric=section.metric)
+        section_db.save(force_insert=True)
         for contract in section.contracts:
-            save_contract(contract)
+            contact_db = save_contract(contract)
+            contact_db.save(force_insert=True)
         
 
 
