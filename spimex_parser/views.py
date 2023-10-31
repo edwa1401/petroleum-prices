@@ -16,7 +16,7 @@ from spimex_parser.shemas import Contract_sh, TradeDay_sh
 
 
 def save_contract(contract: Contract_sh) -> Contract:
-    return Contract(
+    return Contract.objects.create(
         code=contract.code,
         name=contract.code,
         base=contract.base,
@@ -35,12 +35,14 @@ def save_contract(contract: Contract_sh) -> Contract:
 
 
 def save_trade_day_to_db(trade_day: TradeDay_sh) -> None:
-
+    
+    TradeDay.objects.create(day=trade_day.day)
     for section in trade_day.sections:
+        Section.objects.create(name=section.name, metric=section.metric)
         for contract in section.contracts:
             save_contract(contract)
-        Section(name=section.name, metric=section.metric)
-    TradeDay(day=trade_day.day)
+        
+
 
 
 def trade_day_to_db_view(request: HttpRequest) -> HttpResponse:
@@ -65,4 +67,4 @@ def trade_day_to_db_view(request: HttpRequest) -> HttpResponse:
     except (TypeError, ValueError) as e:
         result = f'Incorrect data format {e}'
 
-    return HttpResponse(trade_day)
+    return HttpResponse(result)

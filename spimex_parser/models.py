@@ -23,17 +23,17 @@ class Contract(TimeStampedModel, models.Model):
     base = models.CharField(max_length=1000, blank=False)
     volume = models.CharField(max_length=20, blank=False)
     amount = models.CharField(max_length=20, blank=False)
-    price_change_amount = models.CharField(max_length=20)
-    price_change_ratio = models.CharField(max_length=20)
-    price_min = models.CharField(max_length=20)
-    price_avg = models.CharField(max_length=20)
-    price_max = models.CharField(max_length=20)
-    price_market = models.CharField(max_length=20)
-    price_best_bid = models.CharField(max_length=20)
-    price_best_call = models.CharField(max_length=20)
-    num_lots = models.CharField(max_length=10)
+    price_change_amount = models.CharField(max_length=20, null=True, blank=True)
+    price_change_ratio = models.CharField(max_length=20, null=True, blank=True)
+    price_min = models.CharField(max_length=20, null=True, blank=True)
+    price_avg = models.CharField(max_length=20, null=True, blank=True)
+    price_max = models.CharField(max_length=20, null=True, blank=True)
+    price_market = models.CharField(max_length=20, null=True, blank=True)
+    price_best_bid = models.CharField(max_length=20, null=True, blank=True)
+    price_best_call = models.CharField(max_length=20, null=True, blank=True)
+    num_of_lots = models.SmallIntegerField(null=True, blank=True)
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='contracts')
-    num_of_lots = models.SmallIntegerField()
+
 
     def __str__(self) -> str:
         return f'Contract: {self.name}, basis: {self.base}, \
