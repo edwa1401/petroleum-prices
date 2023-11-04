@@ -20,7 +20,13 @@ def get_sessid(session: requests.Session) -> str:
     return sessid
 
 
-def get_rail_data_from_spimex(station_from: str, station_to: str, cargo: str) -> JsonResponse:
+def get_rail_data_from_spimex(
+        station_from: str,
+        station_to: str,
+        cargo: str,
+        ves:str
+        ) -> JsonResponse:
+    
     session = requests.Session()
     session_id = get_sessid(session)
 
@@ -33,7 +39,7 @@ def get_rail_data_from_spimex(station_from: str, station_to: str, cargo: str) ->
         'st1': station_from,
         'st2': station_to,
         'kgr': cargo,
-        'ves': '52',
+        'ves': ves,
         'gp': '66',
         'nv': '1',
         'nvohr': '1',
@@ -49,14 +55,19 @@ def get_rail_data_from_spimex(station_from: str, station_to: str, cargo: str) ->
 
 def get_rail_tariff_view(request: HttpRequest) -> JsonResponse:
     station_to = request.GET.get('station_to')
+    if not station_to:
+        return JsonResponse({}, status=400)
 
     station_from = '223108'
-    ''' razan_npz'''
+    ''' razan_npz, basis_map.json'''
     cargo = '21105'
-    ''' benzin '''
+    ''' 21105 benzin, 21404 diesel '''
+
+    ves = '52'
+    ''' 52 bensin, 55 disel'''
     
     
-    rzd_calc_response = get_rail_data_from_spimex(station_from, station_to, cargo)
+    rzd_calc_response = get_rail_data_from_spimex(station_from, station_to, cargo, ves)
     distance = rzd_calc_response['data']['total']['distance']
     tariff = rzd_calc_response['data']['total']['sumtWithVat']
     

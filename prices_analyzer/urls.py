@@ -5,5 +5,6 @@ from prices_analyzer import views
 app_name = 'prices_analyzer'
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('users/', views.users, name='users'),
+    path('', views.PetroleumFilterView.as_view()),
 ]

@@ -26,6 +26,7 @@ dependencies = [
     "dotenv>=0.0.5",
     "python-dotenv>=1.0.0",
     "types-beautifulsoup4>=4.12.0.7",
+    "orjson>=3.9.10",
 ]
 requires-python = ">=3.11"
 readme = "README.md"
@@ -94,6 +95,7 @@ exclude = [
     "venv",
     "migrations",
     "settings.py",
+    "install-pdm.py",
     ]
 
 

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'petroleum_prices',
     'spimex_parser',
     'prices_analyzer',
+    'rail_tariff',
     'users',
 
 ]
@@ -132,4 +133,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATIC_ROOT = 'static/'
 
-LOGIN_REDIRECT_URL = '/petroleum_prices/'
+LOGIN_REDIRECT_URL = '/petroleum_filter/'
