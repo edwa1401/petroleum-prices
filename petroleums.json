@@ -1,0 +1,14 @@
+{
+    "AI100": ["A001", "A100", "A106", "AI01", "A10K"],
+    "AI92": ["A592", "A926", "DM07", "A92K", "AR92", "A925", "DM01"],
+    "AI95": ["A595", "A956", "AIE6", "A95K", "DM02", "A953"],
+    "AI98": ["A598", "A98K", "A983"],
+    "DTL": [
+        "DST5", "DST5", "DT5L", "DTSO", "DTYS", "DEC3", "DSC5", "DM03", "DM09", "DS5D", "DTC5",
+        "DTSR", "DTCC", "DTSN"],
+    "DTD": [
+        "DTE3", "DE5E", "DM16", "DE5F", "DT6M", "DE18", "DTE6", "DTUU", "DT20", "DTFE", "DWF5"],
+    "DTZ": [
+        "DT26", "DT62", "DT32", "DTWX", "DTZ2", "DW32", "DW35", "DT38", "DE05", "DE13", "DE15",
+        "DE23", "DW25", "DM17", "DE35", "DTP6", "DWK2", "DTZ6", "DTZM"]
+}

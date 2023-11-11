@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block title %}
+    <meta charset="UTF-8">
+    <title>Petroleum prices based on SPIMEX trades</title>
+    {% endblock %}
+</head>
+<body>
+    {% block sidebar %}
+    <ul class="sidebar-nav">
+       {% if user.is_authenticated %}
+         <li>User: {{ user.get_username }}</li>
+         <li><a href="{% url 'logout' %}?next={{ request.path }}">Logout</a></li>
+       {% else %}
+         <li><a href="{% url 'login' %}?next={{ request.path }}">Login</a></li>
+       {% endif %}
+      </ul>
+    {% endblock %}
+    {% block content %}
+    <!-- default content text (typically empty) -->
+    {% endblock %}
+</body>
+/ No newline at the end of file
+</html>

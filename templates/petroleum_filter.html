@@ -1,0 +1,32 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1> Petroleum prices for last 10 days</h1>
+
+    <form action="" method="get">
+        {{ filter.form.as_p }}
+        <input type="submit" />
+    </form>
+    <table>
+        <thead>
+          <tr>
+            <th scope="col">День</th>
+            <th scope="col">Топливо</th>
+            <th scope="col">Базис</th>
+            <th scope="col">Объем</th>
+            <th scope="col">Цена, руб/ед. изм.</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for object in filter.qs %}
+          <tr>
+            <td>{{ object.day }}</td>
+            <td>{{ object.sort }}</td>
+            <td>{{ object.base_name }}</td>
+            <td>{{ object.volume }}</td>
+            <td>{{ object.price }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+{% endblock %}

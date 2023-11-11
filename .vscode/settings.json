@@ -1,0 +1,45 @@
+{
+    "python.testing.pytestEnabled": true,
+    "python.testing.autoTestDiscoverOnSaveEnabled": false,
+    "python.testing.pytestArgs": ["--no-cov"],
+
+    "python.linting.flake8Enabled": false,
+    "python.linting.pylintEnabled": false,
+    "ruff.interpreter": [".venv/bin/python"],
+
+    "python.linting.mypyEnabled": false,
+    "mypy.dmypyExecutable": "${workspaceFolder}/.venv/bin/dmypy",
+
+    "mypy.targets": ["petroleum_prices", "prices_analyzer", "spimex_parser"],
+
+    "editor.rulers": [
+        99
+      ],
+      "search.exclude": {
+        ".idea": true,
+        "# add virtualenv to gitignore": true,
+        ".venv": true,
+        "# ignore python cache files": true,
+        "**/__pycache__": true,
+        ".mypy_cache": true,
+        ".pytest_cache": true,
+        ".mypy_cache/# Automatically created by mypy": true,
+        ".mypy_cache/*": true,
+        ".pytest_cache/# Created by pytest automatically.": true,
+        ".pytest_cache/*": true
+      },
+
+      "files.exclude": {
+        ".idea": true,
+        "# add virtualenv to gitignore": true,
+        ".venv": true,
+        "# ignore python cache files": true,
+        "**/__pycache__": true,
+        ".mypy_cache": true,
+        ".pytest_cache": true,
+        ".mypy_cache/# Automatically created by mypy": true,
+        ".mypy_cache/*": true,
+        ".pytest_cache/# Created by pytest automatically.": true,
+        ".pytest_cache/*": true
+      },
+}
