@@ -1,7 +1,7 @@
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render
 
-from prices_analyzer.petroleum import (
+from prices_analyzer.services.petroleum import (
     get_petroleums_from_products,
     get_products_from_trade_day,
     save_petroleums_to_db,

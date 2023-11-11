@@ -7,4 +7,6 @@ app_name = 'prices_analyzer'
 urlpatterns = [
     path('users/', views.users, name='users'),
     path('', views.PetroleumFilterView.as_view()),
+    path('prod/', views.get_product_places_view)
+
 ]

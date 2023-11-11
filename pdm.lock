@@ -6,7 +6,7 @@ groups = ["default"]
 cross_platform = true
 static_urls = false
 lock_version = "4.3"
-content_hash = "sha256:1f77598a11d790a4f3c01ee412fed16fcf54f1ccf443d1dac420a5b2474d46c5"
+content_hash = "sha256:f4d9ca0ba175b2717bfb30c5b3eee047a60e746122a2b82a57e84864a67f23d2"
 
 [[package]]
 name = "appnope"
@@ -521,6 +521,19 @@ files = [
 ]
 
 [[package]]
+name = "pydentic"
+version = "0.0.1.dev3"
+requires_python = ">=3.6.1"
+summary = "Pydantic Identifiers"
+dependencies = [
+    "python-stdnum>=1.16",
+]
+files = [
+    {file = "pydentic-0.0.1.dev3-py3-none-any.whl", hash = "sha256:b37f690f262e02e781deae8588a411c596489bc2837701fbb5e8c59b31b4236e"},
+    {file = "pydentic-0.0.1.dev3.tar.gz", hash = "sha256:4c5ee9c260e3cbcdb2a2d725b1d98046cb2b5298e6d6154449a685cf4cca85ec"},
+]
+
+[[package]]
 name = "pygments"
 version = "2.16.1"
 requires_python = ">=3.7"
@@ -580,6 +593,15 @@ summary = "Read key-value pairs from a .env file and set them as environment var
 files = [
     {file = "python-dotenv-1.0.0.tar.gz", hash = "sha256:a8df96034aae6d2d50a4ebe8216326c61c3eb64836776504fcca410e5937a3ba"},
     {file = "python_dotenv-1.0.0-py3-none-any.whl", hash = "sha256:f5971a9226b701070a4bf2c38c89e5a3f0d64de8debda981d1db98583009122a"},
+]
+
+[[package]]
+name = "python-stdnum"
+version = "1.19"
+summary = "Python module to handle standardized numbers and codes"
+files = [
+    {file = "python-stdnum-1.19.tar.gz", hash = "sha256:133ec82f56390ea74c190569e98f2fb14b869808b1d54785708f22d0fead8b3f"},
+    {file = "python_stdnum-1.19-py2.py3-none-any.whl", hash = "sha256:1b5b401ad3f45b798b0317313b781a433f5d7a5ff2c9feb8054664f76f78644e"},
 ]
 
 [[package]]

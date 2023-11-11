@@ -22,14 +22,7 @@ class Metric(enum.Enum):
 
 
 @dataclass(frozen=True, kw_only=True, slots=True)
-class Basis:
-    code: str
-    name: str
-    full_name: str | None
-
-
-@dataclass(frozen=True, kw_only=True, slots=True)
-class ProductKey:
+class ProductKey_sh:
     name: str
     base: str
     base_name: str
@@ -37,7 +30,7 @@ class ProductKey:
 
 @dataclass(frozen=True, kw_only=True, slots=True)
 class Product_sh:
-    product_key: ProductKey
+    product_key: ProductKey_sh
     volume: float
     amount: float
     metric: str
