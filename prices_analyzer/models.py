@@ -62,9 +62,9 @@ class Petroleum(TimeStampedModel, models.Model):
         TN = 'Метрическая тонна'
 
     product_key = models.ForeignKey(
-        ProductKey, on_delete=models.CASCADE, related_name='petroleums'
+        ProductKey, on_delete=models.RESTRICT, related_name='petroleums'
         )
-    basis = models.ForeignKey(Basis, on_delete=models.CASCADE, related_name='petroleums')
+    basis = models.ForeignKey(Basis, on_delete=models.RESTRICT, related_name='petroleums')
     volume = models.DecimalField(max_digits=20, decimal_places=3, null=True, blank=True)
     price = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True)
     metric = models.CharField(choices=Metric.choices, max_length=20, blank=False)
