@@ -57,14 +57,14 @@ class PetroleumConverter:
         self.density_map: dict[PetroleumSort, float] = {}
 
     def _get_petroleums(self) -> dict[PetroleumSort, list[str]]:
-        petroleums = orjson.loads(Path('petroleums.json').read_bytes())
+        petroleums = orjson.loads(Path('data/petroleums.json').read_bytes())
         return {
             PetroleumSort[petroleum_sort]: codes
             for petroleum_sort, codes in petroleums.items()
         }
 
     def _get_density(self) -> dict[PetroleumSort, float]:
-        density_map = orjson.loads(Path('density.json').read_bytes())
+        density_map = orjson.loads(Path('data/density.json').read_bytes())
         return {
             PetroleumSort[petroleum_sort]: density
             for petroleum_sort, density in density_map.items()

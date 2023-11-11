@@ -4,7 +4,7 @@ from prices_analyzer.models import Basis, ProductionPlace
 
 def create_prod_place_map() -> dict[str, list[str]]:
     prod_place_map = {}
-    with open ('basis_prod_map.csv', 'r', encoding='utf8-') as f:
+    with open ('data/basis_prod_map.csv', 'r', encoding='utf8-') as f:
         csv_reader = csv.reader(f, delimiter = ';')
         next(csv_reader)
         for row in csv_reader:
