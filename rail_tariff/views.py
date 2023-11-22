@@ -1,6 +1,6 @@
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import render
-from rail_tariff.create_rail_tariff import get_rail_tariff_from_spimex
+from rail_tariff.services.create_rail_tariff import get_rail_tariff_from_spimex
 
 
 
@@ -10,6 +10,7 @@ def get_rail_tariff_view(request: HttpRequest) -> JsonResponse:
         return JsonResponse({}, status=400)
     
     '''188205 = Калуга'''
+    ''' 060073 МОСКВА-ПАССАЖИРСКАЯ'''
 
     station_from = '223108'
     ''' razan_npz, basis_map.json'''
@@ -26,7 +27,7 @@ def get_rail_tariff_view(request: HttpRequest) -> JsonResponse:
         cargo=cargo,
         ves=ves
     )
-    
+
 
     content = {
         'from': rail_tariff.rail_code_base_from,
@@ -38,3 +39,5 @@ def get_rail_tariff_view(request: HttpRequest) -> JsonResponse:
         }
     return JsonResponse(data=content)
 
+def create_rail_code_view() -> None:
+    pass

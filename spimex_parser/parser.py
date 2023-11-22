@@ -2,20 +2,26 @@ from datetime import date, datetime
 from typing import Any
 
 import requests
-import xlrd # type: ignore[import]
+import xlrd
 from xlrd import sheet
 from spimex_parser.models import Contract, Section, TradeDay
 
-from spimex_parser.shemas import Contract_sh, Section_sh, TradeDay_sh
+from spimex_parser.shemas import ContractSchema, SectionSchema, TradeDaySchema
 
 
 def get_date(date: str) -> date:
     return datetime.date(datetime.strptime(date, '%Y-%m-%d'))
 
 
+class DateValidationError(Exception):
+    def __init__(self, message: str='No tradings in holidays') -> None:
+        self.message = message
+        super().__init__(self.message)
+
+
 def validate_date(date: date) -> str:
     if date.weekday() == 5 or date.weekday() == 6:
-        return 'No tradings in holidays'
+        raise DateValidationError
     if len(str(date.day)) == 1:
         day = '0' + str(date.day)
     else:
@@ -118,7 +124,7 @@ def get_raw_sections(all_values: list[str], sections_indexes: list[list[int]]) -
         ]
 
 
-def get_contracts_from_section(section: list[str]) -> list[Contract_sh]:
+def get_contracts_from_section(section: list[str]) -> list[ContractSchema]:
     NUM_COLUMNS_IN_SECTION = 14
     start_index = 0
     end_index = NUM_COLUMNS_IN_SECTION
@@ -132,8 +138,8 @@ def get_contracts_from_section(section: list[str]) -> list[Contract_sh]:
     return contracts
 
 
-def convert_contract(contract: list[str]) -> Contract_sh:
-    return Contract_sh(
+def convert_contract(contract: list[str]) -> ContractSchema:
+    return ContractSchema(
         code=convert_empty_strings_to_none(contract[-14]),
         name=convert_empty_strings_to_none(contract[-13]),
         base=convert_empty_strings_to_none(contract[-12]),
@@ -151,7 +157,7 @@ def convert_contract(contract: list[str]) -> Contract_sh:
     )
 
 
-def create_sections(all_values: list[str], sections: list[list[str]]) -> list[Section_sh]:
+def create_sections(all_values: list[str], sections: list[list[str]]) -> list[SectionSchema]:
     all_sections = []
     names_prefix = 'Секция Биржи: '
     names = get_searched_string_from_all_values(
@@ -167,7 +173,7 @@ def create_sections(all_values: list[str], sections: list[list[str]]) -> list[Se
     section_index = 0
     for section in sections:
         all_sections.append(
-            Section_sh(
+            SectionSchema(
                 name=names[section_index],
                 metric=metrixes[section_index],
                 contracts=get_contracts_from_section(section)
@@ -177,16 +183,16 @@ def create_sections(all_values: list[str], sections: list[list[str]]) -> list[Se
     return all_sections
 
 
-def create_trade_day(all_values: list[str]) -> TradeDay_sh:
+def create_trade_day(all_values: list[str]) -> TradeDaySchema:
     sections_indexes = get_sections_indexes(all_values)
     sections = get_raw_sections(all_values, sections_indexes)
-    return TradeDay_sh(
+    return TradeDaySchema(
         day=fetch_day(all_values),
         sections=create_sections(all_values, sections)
     )
 
 
-def fetch_trade_day(day: str) -> TradeDay_sh:
+def fetch_trade_day(day: str) -> TradeDaySchema:
     converted_day = get_date(day)
     validated_day = validate_date(converted_day)
     url = get_url_to_spimex_data(validated_day)
@@ -197,7 +203,7 @@ def fetch_trade_day(day: str) -> TradeDay_sh:
     return create_trade_day(all_values)
 
 
-def save_contract(contract: Contract_sh, section: Section) -> Contract:
+def save_contract(contract: ContractSchema, section: Section) -> Contract:
     return Contract(
         code=contract.code,
         name=contract.code,
@@ -217,7 +223,7 @@ def save_contract(contract: Contract_sh, section: Section) -> Contract:
     )
 
 
-def save_trade_day_to_db(trade_day: TradeDay_sh) -> None:
+def save_trade_day_to_db(trade_day: TradeDaySchema) -> None:
     
     trade_day_db = TradeDay(day=trade_day.day)
     trade_day_db.save(force_insert=True)

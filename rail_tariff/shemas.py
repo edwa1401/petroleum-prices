@@ -4,10 +4,11 @@ import re
 from typing import Any
 from bs4 import BeautifulSoup
 import requests
+from config import PAYLOAD_DATA
 
 
 @dataclass
-class RailTariff_sh:
+class RailTariffSchema:
     rail_code_base_to: int
     rail_code_base_from: int
     weight: int
@@ -56,17 +57,17 @@ class RailTariffGetter:
         payload = {
             'action': 'getCalculation',
             'sessid': session_id,
-            'type': '43',
+            'type': PAYLOAD_DATA.get('type'),
             'st1': self.station_from,
             'st2': self.station_to,
             'kgr': self.cargo,
             'ves': self.ves,
-            'gp': '66',
-            'nv': '1',
-            'nvohr': '1',
-            'nprov': '0',
-            'osi': '4',
-            'sv': '2',
+            'gp': PAYLOAD_DATA.get('gp'),
+            'nv': PAYLOAD_DATA.get('nv'),
+            'nvohr': PAYLOAD_DATA.get('nvohr'),
+            'nprov': PAYLOAD_DATA.get('nprov'),
+            'osi': PAYLOAD_DATA.get('osi'),
+            'sv': PAYLOAD_DATA.get('sv'),
         }
         response = session.post(url=ULR_TARIFF_CALCULATOR, data=payload)
         response.raise_for_status()
@@ -79,8 +80,8 @@ class RailTariffGetter:
     def get_tarif(self) -> str:
         return self._get_rail_data_from_spimex()['data']['total']['sumtWithVat']
     
-    def get_rail_tariff(self) -> RailTariff_sh:
-        return RailTariff_sh(
+    def get_rail_tariff(self) -> RailTariffSchema:
+        return RailTariffSchema(
             rail_code_base_to=int(self.station_to),
             rail_code_base_from=int(self.station_from),
             weight=int(self.ves),

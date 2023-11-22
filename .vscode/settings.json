@@ -10,7 +10,7 @@
     "python.linting.mypyEnabled": false,
     "mypy.dmypyExecutable": "${workspaceFolder}/.venv/bin/dmypy",
 
-    "mypy.targets": ["petroleum_prices", "prices_analyzer", "spimex_parser"],
+    "mypy.targets": ["petroleum_prices", "prices_analyzer", "spimex_parser", "rail_tariff"],
 
     "editor.rulers": [
         99

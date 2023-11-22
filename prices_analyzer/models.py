@@ -31,17 +31,17 @@ class Basis(TimeStampedModel, models.Model):
     
 class ProductionPlace(TimeStampedModel, models.Model):
     basis = models.OneToOneField(Basis, on_delete=models.PROTECT)
-    rzd_code = models.OneToOneField(RzdCode, on_delete=models.PROTECT)
+    rzd_code = models.ForeignKey(RzdCode, on_delete=models.PROTECT)
     name = models.CharField(max_length=1000, blank=False)
     def __str__(self) -> str:
         return f' Basis code: {self.basis.code}, basis name: {self.basis.name}, \
-            rzd code: {self.rzd_code}, production place name: {self.name}'    
+            rzd code: {self.rzd_code.code}, production place name: {self.name}'    
 
 
 class Depot(TimeStampedModel, models.Model):
     name = models.CharField(max_length=1000)
     user = models.ManyToManyField(User, related_name='depots')
-    rzd_code = models.OneToOneField(RzdCode, on_delete=models.PROTECT)
+    rzd_code = models.ForeignKey(RzdCode, on_delete=models.PROTECT)
     def __str__(self) -> str:
         return f' Petroleum depot: {self.name}'
     
