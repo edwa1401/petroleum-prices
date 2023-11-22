@@ -1,5 +1,5 @@
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
-from django.shortcuts import render
+from django.shortcuts import render # noqa: F401
 
 from prices_analyzer.services.petroleum import (
     get_petroleums_from_products,

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render # noqa: F401
 from django.views.generic import DetailView
 
 class UserProfileView(DetailView):

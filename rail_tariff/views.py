@@ -1,5 +1,5 @@
 from django.http import HttpRequest, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render # noqa: F401
 from rail_tariff.services.create_rail_tariff import get_rail_tariff_from_spimex
 
 
@@ -28,7 +28,6 @@ def get_rail_tariff_view(request: HttpRequest) -> JsonResponse:
         ves=ves
     )
 
-
     content = {
         'from': rail_tariff.rail_code_base_from,
         'to': rail_tariff.rail_code_base_to,
@@ -39,5 +38,7 @@ def get_rail_tariff_view(request: HttpRequest) -> JsonResponse:
         }
     return JsonResponse(data=content)
 
-def create_rail_code_view() -> None:
-    pass
+
+def create_rail_code_view(request: HttpRequest) -> JsonResponse:
+    content: dict = {}
+    return JsonResponse(data=content)
