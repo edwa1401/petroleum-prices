@@ -1,0 +1,18 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Depots</title>
+</head>
+<body>
+    {% for depot in depot_list %}
+        <li>{{ depot.pk }}</li>
+        <li>{{ depot.name }}</li>
+        <li> {{ depot.rzd_code }}</li>
+        <li> {{ depot.user }} </li>
+    {% endfor %}
+</body>
+
+{% endblock %}

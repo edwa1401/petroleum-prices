@@ -1,7 +1,29 @@
-from django.http import HttpRequest, JsonResponse
-from django.shortcuts import render # noqa: F401
-from rail_tariff.services.create_rail_tariff import get_rail_tariff_from_spimex
+from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, JsonResponse
+from django.views.generic import DetailView
+from django.views.generic.edit import CreateView, UpdateView
 
+from rail_tariff.models import RzdCode  # noqa: F401
+from rail_tariff.services.create_rail_tariff import (
+    get_rail_tariff_from_spimex,
+    get_rail_tariffs_for_depot,
+)
+from rail_tariff.shemas import Fuel
+
+
+class RzdCodeDetailView(DetailView):
+    model = RzdCode
+    template_name = 'rail_tariff/rzdcode_detail.html'
+
+
+class CreateRzdCodeView(CreateView):
+    model = RzdCode
+    fields = ['code', 'station_name']
+
+
+class UpdateRzdCodeView(UpdateView):
+    model = RzdCode
+    fields = ['code', 'station_name']
+    template_name_suffix = '_update_form'
 
 
 def get_rail_tariff_view(request: HttpRequest) -> JsonResponse:
@@ -29,16 +51,25 @@ def get_rail_tariff_view(request: HttpRequest) -> JsonResponse:
     )
 
     content = {
-        'from': rail_tariff.rail_code_base_from,
-        'to': rail_tariff.rail_code_base_to,
-        'cargo': rail_tariff.cargo,
-        'weight': rail_tariff.weight,
+        'from': station_from,
+        'to': station_to,
+        'cargo': cargo,
+        'weight': ves,
         'distance': rail_tariff.distance,
         'tariff': rail_tariff.tarif
         }
     return JsonResponse(data=content)
 
 
-def create_rail_code_view(request: HttpRequest) -> JsonResponse:
-    content: dict = {}
-    return JsonResponse(data=content)
+def create_rail_tariff_view(request: HttpRequest) -> HttpResponse:
+    depot_id = request.GET.get('depot_id')
+    fuel_type = request.GET.get('fuel')
+    if not depot_id or not fuel_type:
+        return HttpResponseBadRequest('Should be depot id and fuel')
+    fuel = Fuel[fuel_type]
+    
+    
+    get_rail_tariffs_for_depot(int(depot_id), fuel)
+
+    return HttpResponse('succes')
+    

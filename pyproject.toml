@@ -20,8 +20,9 @@ dependencies = [
     "python-dotenv>=1.0.0",
     "types-beautifulsoup4>=4.12.0.7",
     "orjson>=3.9.10",
-    "pydentic>=0.0.1.dev3",
     "faker>=20.0.0",
+    "celery[redis]>=5.3.6",
+    "pydantic>=2.5.2",
 ]
 requires-python = ">=3.11"
 readme = "README.md"
@@ -48,6 +49,11 @@ ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = "xlrd.*"
+ignore_missing_imports = true
+
+
+[[tool.mypy.overrides]]
+module = "celery.*"
 ignore_missing_imports = true
 
 

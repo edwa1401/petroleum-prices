@@ -1,5 +1,6 @@
 import decimal
 from django.db import models
+from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
 from rail_tariff.models import RailTariff, RzdCode
 
@@ -42,6 +43,10 @@ class Depot(TimeStampedModel, models.Model):
     name = models.CharField(max_length=1000)
     user = models.ManyToManyField(User, related_name='depots')
     rzd_code = models.ForeignKey(RzdCode, on_delete=models.PROTECT)
+
+    def get_absolute_url(self) -> str:
+        return reverse('prices_analyzer:depot:list')
+
     def __str__(self) -> str:
         return f' Petroleum depot: {self.name}'
     

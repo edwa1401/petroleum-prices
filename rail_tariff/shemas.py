@@ -1,10 +1,18 @@
-from dataclasses import dataclass
 import decimal
+import enum
 import re
-from typing import Any
-from bs4 import BeautifulSoup
+from dataclasses import dataclass
+
 import requests
+from bs4 import BeautifulSoup
+from pydantic import BaseModel, Field
+
 from config import PAYLOAD_DATA
+
+
+class Fuel(enum.Enum):
+    AB = 'AB'
+    DT = 'DT'
 
 
 @dataclass
@@ -20,17 +28,26 @@ class SessionNotFoundError(Exception):
     pass
 
 
-class RailTariffGetter:
-    def __init__(self, station_from: str, station_to: str, cargo: str, ves: str) -> None:
-        self.station_from = station_from
-        self.station_to = station_to
-        self.cargo = cargo
-        self.ves = ves
+
+class RailTariff(BaseModel):
+    distance: int
+    tarif: decimal.Decimal = Field(alias='sumWithVat')
 
 
-    def _get_sessid(self, session: requests.Session) -> str:
-        URL_RZD = 'https://spimex.com/markets/oil_products/rzd/'
-        response = session.get(URL_RZD)
+class RailTariffClient:
+    def __init__(self) -> None:
+        self.session: requests.Session
+
+
+    url_rzd = 'https://spimex.com/markets/oil_products/rzd/'
+    url_tarif_calc = 'https://spimex.com/local/components/spimex/calculator.rzd/templates/.default/ajax.php'
+
+
+    def get_session(self) -> tuple[str, requests.Session]:
+        
+        session = requests.Session()
+    
+        response = session.get(self.url_rzd)
         response.raise_for_status()
 
         response_text = BeautifulSoup(response.text, 'html.parser')
@@ -45,23 +62,26 @@ class RailTariffGetter:
         match = sess_id_re.match(result)
         if match:
             sessid = match.groups()[0]
-        return sessid
+        return sessid, session
 
-    def _get_rail_data_from_spimex(self) -> dict[str, Any]:
+    def get_rail_tariff(
+            self,
+            station_from: str,
+            station_to: str,
+            cargo: str,
+            ves: str
+            ) -> RailTariff:
         
-        session = requests.Session()
-        session_id = self._get_sessid(session)
+        session_id, session = self.get_session()
 
-        ULR_TARIFF_CALCULATOR = 'https://spimex.com/local/components/spimex/calculator.rzd/templates/.default/ajax.php'
-
-        payload = {
+        data = {
             'action': 'getCalculation',
             'sessid': session_id,
             'type': PAYLOAD_DATA.get('type'),
-            'st1': self.station_from,
-            'st2': self.station_to,
-            'kgr': self.cargo,
-            'ves': self.ves,
+            'st1': station_from,
+            'st2': station_to,
+            'kgr': cargo,
+            'ves': ves,
             'gp': PAYLOAD_DATA.get('gp'),
             'nv': PAYLOAD_DATA.get('nv'),
             'nvohr': PAYLOAD_DATA.get('nvohr'),
@@ -69,23 +89,10 @@ class RailTariffGetter:
             'osi': PAYLOAD_DATA.get('osi'),
             'sv': PAYLOAD_DATA.get('sv'),
         }
-        response = session.post(url=ULR_TARIFF_CALCULATOR, data=payload)
+        response = session.post(url=self.url_tarif_calc, data=data)
         response.raise_for_status()
 
-        return response.json()
-    
-    def get_distance(self) -> str:
-        return self._get_rail_data_from_spimex()['data']['total']['distance']
-    
-    def get_tarif(self) -> str:
-        return self._get_rail_data_from_spimex()['data']['total']['sumtWithVat']
-    
-    def get_rail_tariff(self) -> RailTariffSchema:
-        return RailTariffSchema(
-            rail_code_base_to=int(self.station_to),
-            rail_code_base_from=int(self.station_from),
-            weight=int(self.ves),
-            cargo=int(self.cargo),
-            distance=int(self.get_distance()),
-            tarif=decimal.Decimal(self.get_tarif())
-        )
+        payload = response.json()
+
+        total = payload['data']['total']
+        return RailTariff(**total)

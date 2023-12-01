@@ -1,10 +1,14 @@
 from django.db import models
 from django_extensions.db.models import TimeStampedModel
+from django.urls import reverse
 
-    
+
 class RzdCode(TimeStampedModel, models.Model):
-    code = models.SmallIntegerField()
+    code = models.SmallIntegerField(unique=True)
     station_name = models.CharField(max_length=1000, blank=True)
+
+    def get_absolute_url(self) -> str:
+        return reverse('rail_tariff:rzdcode:detail', kwargs={'pk': self.pk})
 
     def __str__(self) -> str:
         return f' Code {self.code}, station_name {self.station_name}'

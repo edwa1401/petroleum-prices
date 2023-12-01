@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Rzd code {{ object.code }}е</title>
+</head>
+<body>
+    <ul>
+        <p> <b>Id: {{ object.pk }}</b> </p>
+            <li>Code: {{ object.code }}</li>
+            <li>Station name: {{ object.station_name }}</li>
+    </ul>
+</body>
+
+{% endblock %}
+
+

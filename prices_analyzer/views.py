@@ -3,8 +3,10 @@ from django.shortcuts import render
 from prices_analyzer.filters import PetroleumFilter
 from prices_analyzer.services.create_prod_places import create_prod_places
 from users.models import User
-from prices_analyzer.models import Petroleum
+from prices_analyzer.models import Depot, Petroleum
 from django_filters.views import FilterView # type: ignore[import]
+from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic import ListView
 
 def users(request: HttpRequest) -> HttpResponse:
     users = User.objects.all()
@@ -31,3 +33,17 @@ def get_product_places_view(request: HttpRequest) -> HttpResponse:
 
     return HttpResponse(result)
 
+
+class CreateDepotView(CreateView):
+    model = Depot
+    fields = ['name', 'user', 'rzd_code']
+    
+
+class UpdateDepotView(UpdateView):
+    model = Depot
+    fields = ['name', 'user', 'rzd_code']
+    template_name_suffix = '_update_form'
+
+
+class DepotListView(ListView):
+    model = Depot
