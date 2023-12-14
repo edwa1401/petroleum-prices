@@ -4,6 +4,7 @@ from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
 from rail_tariff.models import RailTariff, RzdCode
 
+from typing import Any
 from users.models import User
 
 
@@ -92,9 +93,23 @@ class Prices(TimeStampedModel, models.Model):
         )
     rail_tariff = models.ForeignKey(RailTariff, on_delete=models.PROTECT, related_name='prices')
     petroleum = models.ForeignKey(Petroleum, on_delete=models.PROTECT, related_name='prices')
-    price = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True)
+    full_price = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True)
+    
+    def to_json(self) -> dict[str, Any]:
+        return {
+                'depot': self.depot.name,
+                'production_place': self.production_place.name,
+                'petroleum': self.petroleum.product_key.sort,
+                'distance': self.rail_tariff.distance,
+                'tarif': self.rail_tariff.tarif,
+                'petroleum_price': self.petroleum.price,
+                'full_price': self.full_price
+        }
+    
+    def get_prices(self) -> None:
+        pass
 
     def __str__(self) -> str:
         return f' Depot: {self.depot.name}, from {self.production_place.name}, \
              petroleum: {self.petroleum.product_key.sort}, distance: {self.rail_tariff.distance}, \
-                price: {self.price}'
+                full_price: self.full_price'

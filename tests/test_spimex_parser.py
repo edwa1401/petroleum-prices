@@ -1,16 +1,6 @@
 import datetime
 from django.test import TestCase
-
-from spimex_parser.parser import (DateValidationError, convert_empty_strings_to_none,
-                                         get_url_to_spimex_data,
-                                         download_file_from_spimex,
-                                         delete_all_emty_values_from_raw_data,
-                                         get_indexes_for_search_value,
-                                         extract_value_from_string,
-                                         get_searched_string_from_all_values,
-                                         convert_contract,
-                                         get_date, validate_date
-                                         )
+from spimex_parser import parser
 import pytest
 from unittest.mock import patch
 
@@ -22,7 +12,7 @@ from unittest.mock import patch
          ]
 )
 def test__get_date__success(date, expected):
-    assert get_date(date) == expected
+    assert parser.get_date(date) == expected
 
 
 @pytest.mark.parametrize(
@@ -39,8 +29,8 @@ def test__get_date__success(date, expected):
             'add zeros to month and day'
         ]
 )
-def test__validate_date__success(data, expected):
-    assert validate_date(data) == expected
+def test__convert_date__success(data, expected):
+    assert parser.convert_date(data) == expected
 
 
 @pytest.mark.parametrize(
@@ -51,17 +41,16 @@ def test__validate_date__success(data, expected):
         ]
 )
 
-def test__validate_date__fail_raised_error_for_weekend_days(data):
-    with pytest.raises(DateValidationError):
-        assert validate_date(data)
+def test__validate_date__fail_for_weekend_days(data):
+    assert parser.convert_date(data) is None
 
 
 def test__convert_empty_strings__success_return_none_for_value_is_dash():
-    assert convert_empty_strings_to_none('-') is None
+    assert parser.convert_empty_strings_to_none('-') is None
 
 
 def test__convert_empty_strings__return_string_when_value_is_not_dash():
-    assert convert_empty_strings_to_none('abc') == 'abc'
+    assert parser.convert_empty_strings_to_none('abc') == 'abc'
 
 
 @pytest.mark.parametrize(
@@ -73,7 +62,7 @@ def test__convert_empty_strings__return_string_when_value_is_not_dash():
 
 )
 def test__get_url_to_spimex_data__success(date, expected):
-    assert get_url_to_spimex_data(date) == expected
+    assert parser.get_url_to_spimex_data(date) == expected
 
 @pytest.mark.parametrize(
     ('date, expected'),
@@ -89,19 +78,14 @@ def test__get_url_to_spimex_data__success(date, expected):
 )
 def test__get_url_to_spimex_data__fail(date, expected):
     with pytest.raises(AssertionError):
-        assert get_url_to_spimex_data(date) == expected
+        assert parser.get_url_to_spimex_data(date) == expected
 
 
-def test__download_file_from_spimex__success(make_request_response):
+def test__download_file__success(make_request_response):
     value = 'some value'
     with patch('spimex_parser.parser.requests.get') as requests_get_mock:
         requests_get_mock.return_value = make_request_response(value)
-        assert download_file_from_spimex('some_url') == b'some value'
-
-
-# TODO написать тесты на возвращение объекта sheet.Sheet из байтов и конвертиртацию Sheet.sheet. в строку
-
-
+        assert parser.download_file('some_url') == b'some value'
 
 
 @pytest.mark.parametrize(('raw_data, expected'),
@@ -111,7 +95,7 @@ def test__download_file_from_spimex__success(make_request_response):
 ]
 )
 def test__delete_all_emty_values_from_raw_data__success(raw_data, expected):
-    assert delete_all_emty_values_from_raw_data(raw_data) == expected
+    assert parser.delete_all_emty_values_from_raw_data(raw_data) == expected
 
 
 @pytest.mark.parametrize(('all_values, search_value, expected'),
@@ -120,7 +104,7 @@ def test__delete_all_emty_values_from_raw_data__success(raw_data, expected):
                              (['1', '2', '3', '4', '5'], '6', [])
 ])
 def test__get_indexes_for_search_value__success(all_values, search_value, expected):
-    assert get_indexes_for_search_value(all_values, search_value) == expected
+    assert parser.get_indexes_for_search_value(all_values, search_value) == expected
 
 
 @pytest.mark.parametrize(('raw_string, prefix, expected'),
@@ -129,7 +113,7 @@ def test__get_indexes_for_search_value__success(all_values, search_value, expect
                              ('somesimbol', 'other', 'somesimbol')
 ])
 def test__extract_value_from_string__succes(raw_string, prefix, expected):
-    assert extract_value_from_string(raw_string, prefix) == expected
+    assert parser.extract_value_from_string(raw_string, prefix) == expected
 
 
 @pytest.mark.parametrize(('all_values, search_value, prefix, expected'),
@@ -138,7 +122,7 @@ def test__extract_value_from_string__succes(raw_string, prefix, expected):
                              (['1', '2', '3', '4', '5'], '6', '6', [])
 ])
 def test__get_searched_string_from_all_values__success(all_values, search_value, prefix, expected):
-    assert get_searched_string_from_all_values(all_values, search_value, prefix) == expected
+    assert parser.get_searched_string_from_all_values(all_values, search_value, prefix) == expected
 
 
 def test__convert_contract__success(make_contract_str, make_code, make_petroleum_price, create_contract):
@@ -187,7 +171,7 @@ def test__convert_contract__success(make_contract_str, make_code, make_petroleum
         num_of_lots=num_of_lot
     )
 
-    assert convert_contract(contract=contract) == expected
+    assert parser.convert_contract(contract=contract) == expected
 
 
 def test__convert_contract__fail_return_assertion_error_for_different_result_in_code(
@@ -202,4 +186,25 @@ def test__convert_contract__fail_return_assertion_error_for_different_result_in_
     expected = create_contract(code='A595UFM060F')
 
     with pytest.raises(AssertionError):
-        assert convert_contract(contract=contract) == expected
+        assert parser.convert_contract(contract=contract) == expected
+
+
+def test__get_spimex_sheet_for_day__open_first_sheet_from_excel(create_day, xlrd_open_workbook_mock):
+
+    day = create_day('2023-12-08')
+
+    parser.get_spimex_sheet_for_day(datetime.datetime(2023, 12, 8))
+    xlrd_open_workbook_mock.return_value.sheet_by_index.assert_called_once_with(0)
+
+
+
+# def test__fetch_trade_day__success(create_day, create_trade_day):
+    
+#     day = create_day('2023-12-11')
+#     expected = create_trade_day(input_day='11.12.2023')
+
+#     with patch('spimex_parser.parser.get_spimex_sheet_for_day') as get_spimex_sheet_for_day_mock:
+#         get_spimex_sheet_for_day_mock.return_value
+    
+#         assert parser.fetch_trade_day(day) == expected
+    

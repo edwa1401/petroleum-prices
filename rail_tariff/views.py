@@ -1,14 +1,12 @@
-from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, JsonResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 
 from rail_tariff.models import RzdCode  # noqa: F401
 from rail_tariff.services.create_rail_tariff import (
     get_rail_tariff_from_spimex,
-    get_rail_tariffs_for_depot,
+    get_tariffs_for_all_depots,
 )
-from rail_tariff.shemas import Fuel
-
 
 class RzdCodeDetailView(DetailView):
     model = RzdCode
@@ -40,7 +38,7 @@ def get_rail_tariff_view(request: HttpRequest) -> JsonResponse:
     cargo = '21105'
     ''' 21105 benzin, 21404 diesel '''
 
-    ves = '52'
+    ves = '55'
     ''' 52 bensin, 55 disel'''
 
     rail_tariff = get_rail_tariff_from_spimex(
@@ -62,14 +60,8 @@ def get_rail_tariff_view(request: HttpRequest) -> JsonResponse:
 
 
 def create_rail_tariff_view(request: HttpRequest) -> HttpResponse:
-    depot_id = request.GET.get('depot_id')
-    fuel_type = request.GET.get('fuel')
-    if not depot_id or not fuel_type:
-        return HttpResponseBadRequest('Should be depot id and fuel')
-    fuel = Fuel[fuel_type]
     
-    
-    get_rail_tariffs_for_depot(int(depot_id), fuel)
+    get_tariffs_for_all_depots()
 
     return HttpResponse('succes')
     

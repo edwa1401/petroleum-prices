@@ -32,7 +32,7 @@
       "files.exclude": {
         ".idea": true,
         "# add virtualenv to gitignore": true,
-        ".venv": true,
+        ".venv": false,
         "# ignore python cache files": true,
         "**/__pycache__": true,
         ".mypy_cache": true,

@@ -1,5 +1,6 @@
 import decimal
 import enum
+import logging
 import re
 from dataclasses import dataclass
 
@@ -9,6 +10,7 @@ from pydantic import BaseModel, Field
 
 from config import PAYLOAD_DATA
 
+logger = logging.getLogger(__name__)
 
 class Fuel(enum.Enum):
     AB = 'AB'
@@ -31,24 +33,19 @@ class SessionNotFoundError(Exception):
 
 class RailTariff(BaseModel):
     distance: int
-    tarif: decimal.Decimal = Field(alias='sumWithVat')
+    tarif: decimal.Decimal = Field(alias='sumtWithVat')
 
 
 class RailTariffClient:
     def __init__(self) -> None:
         self.session: requests.Session
 
+    prefix = 'https://spimex.com'
+    url_rzd = prefix + '/markets/oil_products/rzd/'
+    url_tarif_calc = prefix + '/local/components/spimex/calculator.rzd/templates/.default/ajax.php'
 
-    url_rzd = 'https://spimex.com/markets/oil_products/rzd/'
-    url_tarif_calc = 'https://spimex.com/local/components/spimex/calculator.rzd/templates/.default/ajax.php'
 
-
-    def get_session(self) -> tuple[str, requests.Session]:
-        
-        session = requests.Session()
-    
-        response = session.get(self.url_rzd)
-        response.raise_for_status()
+    def _get_sessid_from_response(self, response: requests.Response) -> str:
 
         response_text = BeautifulSoup(response.text, 'html.parser')
         if not response_text.head:
@@ -62,7 +59,20 @@ class RailTariffClient:
         match = sess_id_re.match(result)
         if match:
             sessid = match.groups()[0]
-        return sessid, session
+        
+        return sessid
+    
+
+    def get_session(self) -> str:
+        
+        self.session = requests.Session()
+    
+        response = self.session.get(self.url_rzd)
+        logger.debug('Response headers=%s', response.headers)
+        response.raise_for_status()
+
+        return self._get_sessid_from_response(response)
+    
 
     def get_rail_tariff(
             self,
@@ -72,7 +82,7 @@ class RailTariffClient:
             ves: str
             ) -> RailTariff:
         
-        session_id, session = self.get_session()
+        session_id = self.get_session()
 
         data = {
             'action': 'getCalculation',
@@ -89,10 +99,11 @@ class RailTariffClient:
             'osi': PAYLOAD_DATA.get('osi'),
             'sv': PAYLOAD_DATA.get('sv'),
         }
-        response = session.post(url=self.url_tarif_calc, data=data)
+        response = self.session.post(url=self.url_tarif_calc, data=data)
         response.raise_for_status()
 
         payload = response.json()
 
         total = payload['data']['total']
         return RailTariff(**total)
+

@@ -2,6 +2,7 @@ import datetime
 import io
 import random
 import string
+from unittest.mock import patch
 
 import pytest
 import requests
@@ -207,6 +208,17 @@ def make_date(make_date_str):
         return datetime.datetime.strptime(day, '%d.%m.%Y')
     return inner
 
+
+@pytest.fixture
+def create_day():
+    def inner(day: str | None = None):
+        fake = Faker()
+        day = day or fake.date()
+        return datetime.date.fromisoformat(day)
+    return inner
+    
+
+
 @pytest.fixture
 def create_contract(make_contract_str):
     def inner(
@@ -320,3 +332,20 @@ def create_product(create_product_key, make_date, create_volume, create_amount):
         )
     return inner
 
+
+@pytest.fixture
+def xlrd_open_workbook_mock():
+    with patch('xlrd.open_workbook') as mock:
+        yield mock
+
+
+@pytest.fixture
+def xlrd_open_workbook_mock():
+    with patch('xlrd.open_workbook') as mock:
+        yield mock
+
+
+@pytest.fixture
+def download_file_mock():
+    with patch('spimex_parser.parser.download_file') as mock:
+        yield mock

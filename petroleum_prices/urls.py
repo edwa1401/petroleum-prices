@@ -21,7 +21,7 @@ from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('petroleum/', include('prices_analyzer.urls')),
+    path('analyzer/', include('prices_analyzer.urls')),
     path('rail/', include('rail_tariff.urls', namespace='rail_tariff')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('parser/', include('spimex_parser.urls')),

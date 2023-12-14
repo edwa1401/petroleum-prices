@@ -1,8 +1,17 @@
 from django.urls import include, path
 
-from prices_analyzer import views
+from prices_analyzer import views, API_views
 
 app_name = 'prices_analyzer'
+
+prices_pattern = (
+    [
+        path('', views.PricesListView.as_view(), name='list'),
+        path('API/', API_views.get_prices_for_period_view),
+        path('create/', views.create_prices_view),
+    ], 
+    'prices'
+    )
 
 depot_pattern = (
     [
@@ -16,5 +25,6 @@ urlpatterns = [
     path('users/', views.users, name='users'),
     path('', views.PetroleumFilterView.as_view()),
     path('prod/', views.get_product_places_view),
-    path('depot/', include(depot_pattern))
+    path('depot/', include(depot_pattern)),
+    path('prices/', include(prices_pattern)),
 ]

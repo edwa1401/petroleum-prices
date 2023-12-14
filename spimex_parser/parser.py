@@ -1,36 +1,29 @@
-from datetime import date, datetime
+import datetime
 from typing import Any
 
 import requests
 import xlrd
 from xlrd import sheet
-from spimex_parser.models import Contract, Section, TradeDay
 
+from prices_analyzer.services.petroleum import (
+    get_petroleums_from_products,
+    get_products_from_trade_day,
+    save_petroleums_to_db,
+)
+from spimex_parser.models import Contract, Section, TradeDay
 from spimex_parser.shemas import ContractSchema, SectionSchema, TradeDaySchema
 
 
-def get_date(date: str) -> date:
-    return datetime.date(datetime.strptime(date, '%Y-%m-%d'))
+def get_date(date: str) -> datetime.date:
+    return datetime.datetime.date(datetime.datetime.strptime(date, '%Y-%m-%d'))
 
 
-class DateValidationError(Exception):
-    def __init__(self, message: str='No tradings in holidays') -> None:
-        self.message = message
-        super().__init__(self.message)
-
-
-def validate_date(date: date) -> str:
+def convert_date(date: datetime.date) -> str | None:
+    
     if date.weekday() == 5 or date.weekday() == 6:
-        raise DateValidationError
-    if len(str(date.day)) == 1:
-        day = '0' + str(date.day)
-    else:
-        day = str(date.day)
-    if len(str(date.month)) == 1:
-        month = '0' + str(date.month)
-    else:
-        month = str(date.month)
-    return str(date.year) + month + day
+        return None
+
+    return str(date.year) + '{:02d}'.format(date.month) + '{:02d}'.format(date.day)
 
 
 def get_url_to_spimex_data(date: str) -> str:
@@ -40,18 +33,11 @@ def get_url_to_spimex_data(date: str) -> str:
     return '{}{}{}'.format(URL_TRADINGS_START, date, URL_TRADINGS_END)
 
 
-def download_file_from_spimex(url: str) -> bytes:
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
-    except requests.exceptions.HTTPError:
-        raise
+def download_file(url: str) -> bytes:
+
+    response = requests.get(url)
+    response.raise_for_status()
     return response.content
-
-
-def read_spimex_file(content: bytes) -> sheet.Sheet:
-    workbook = xlrd.open_workbook(file_contents=content)
-    return workbook.sheet_by_index(0)
 
 
 def get_all_cell_values_from_sheet(sheet: sheet.Sheet) -> list[str]:
@@ -89,14 +75,14 @@ def get_searched_string_from_all_values(
         ]
 
 
-def fetch_day(all_values: list[str]) -> date:
+def fetch_day(all_values: list[str]) -> datetime.date:
     search_value ='Дата торгов: '
     prefix = search_value
     days_str = get_searched_string_from_all_values(
         all_values, search_value=search_value, prefix=prefix
         )
-    days = [datetime.strptime(day_str, '%d.%m.%Y') for day_str in days_str]
-    return datetime.date(days[0])
+    days = [datetime.datetime.strptime(day_str, '%d.%m.%Y') for day_str in days_str]
+    return datetime.datetime.date(days[0])
 
 
 def convert_empty_strings_to_none(string: str) -> Any:
@@ -192,12 +178,17 @@ def create_trade_day(all_values: list[str]) -> TradeDaySchema:
     )
 
 
-def fetch_trade_day(day: str) -> TradeDaySchema:
-    converted_day = get_date(day)
-    validated_day = validate_date(converted_day)
-    url = get_url_to_spimex_data(validated_day)
-    content = download_file_from_spimex(url)
-    sheet = read_spimex_file(content)
+def get_spimex_sheet_for_day(day: datetime.date) -> sheet.Sheet:
+    day_for_url = convert_date(day)
+    if day_for_url:
+        url = get_url_to_spimex_data(day_for_url)
+        content = download_file(url)
+        workbook = xlrd.open_workbook(file_contents=content)
+        return workbook.sheet_by_index(0)
+
+
+def fetch_trade_day(day: datetime.date) -> TradeDaySchema:
+    sheet = get_spimex_sheet_for_day(day)
     raw_data = get_all_cell_values_from_sheet(sheet)
     all_values = delete_all_emty_values_from_raw_data(raw_data)
     return create_trade_day(all_values)
@@ -234,3 +225,27 @@ def save_trade_day_to_db(trade_day: TradeDaySchema) -> None:
         for contract in section.contracts:
             contact_db = save_contract(contract=contract, section=section_db)
             contact_db.save(force_insert=True)
+
+
+def check_trade_day_already_exists_in_db(day: datetime.date) -> bool:
+    trade_days = TradeDay.objects.filter(day=day)
+    if not trade_days:
+        return False
+    return True
+
+
+def save_trade_day_petroleums_to_db(day: datetime.date) -> None: 
+    
+    if not check_trade_day_already_exists_in_db(day=day):
+        trade_day = fetch_trade_day(day=day)
+        products = get_products_from_trade_day(trade_day=trade_day)
+        petroleums = get_petroleums_from_products(products=products)
+
+
+        try:
+            save_trade_day_to_db(trade_day)
+            save_petroleums_to_db(petroleums)
+
+        except (TypeError, ValueError) as e:
+            raise e
+

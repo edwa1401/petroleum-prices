@@ -23,6 +23,11 @@ dependencies = [
     "faker>=20.0.0",
     "celery[redis]>=5.3.6",
     "pydantic>=2.5.2",
+    "redis>=5.0.1",
+    "django-celery-results>=2.5.1",
+    "django-celery-beat>=2.5.0",
+    "django-redis>=5.4.0",
+    "backoff>=2.2.1",
 ]
 requires-python = ">=3.11"
 readme = "README.md"
