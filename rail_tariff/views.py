@@ -1,80 +1,67 @@
-import re
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import render
-import requests
-from bs4 import BeautifulSoup
+from django.views.generic import DetailView
+from django.views.generic.edit import CreateView, UpdateView
+
+from rail_tariff.models import RzdCode  # noqa: F401
+from rail_tariff.services.create_rail_tariff import (
+    get_rail_tariff_from_spimex,
+    get_tariffs_for_all_depots,
+)
+
+class RzdCodeDetailView(DetailView):
+    model = RzdCode
+    template_name = 'rail_tariff/rzdcode_detail.html'
 
 
-def get_sessid(session: requests.Session) -> str:
-    URL_RZD = 'https://spimex.com/markets/oil_products/rzd/'
-    response = session.get(URL_RZD)
-    response_text = BeautifulSoup(response.text, 'html.parser')
-    raw_scripts = response_text.head.find_all('script')
-    for script in raw_scripts:
-        if 'bitrix_sessid' in script.text:
-            result = script.text
-    sess_id_re = re.compile("^.*'bitrix_sessid':'(\w*)'.*$")
-    match = sess_id_re.match(result)
-    if match:
-        sessid = match.groups()[0]
-    return sessid
+class CreateRzdCodeView(CreateView):
+    model = RzdCode
+    fields = ['code', 'station_name']
 
 
-def get_rail_data_from_spimex(
-        station_from: str,
-        station_to: str,
-        cargo: str,
-        ves:str
-        ) -> JsonResponse:
-    
-    session = requests.Session()
-    session_id = get_sessid(session)
-
-    ULR_TARIFF_CALCULATOR = 'https://spimex.com/local/components/spimex/calculator.rzd/templates/.default/ajax.php'
-
-    payload = {
-        'action': 'getCalculation',
-        'sessid': session_id,
-        'type': '43',
-        'st1': station_from,
-        'st2': station_to,
-        'kgr': cargo,
-        'ves': ves,
-        'gp': '66',
-        'nv': '1',
-        'nvohr': '1',
-        'nprov': '0',
-        'osi': '4',
-        'sv': '2',
-    }
-    response = session.post(url=ULR_TARIFF_CALCULATOR, data=payload)
-    response.raise_for_status()
-
-    return response.json()
+class UpdateRzdCodeView(UpdateView):
+    model = RzdCode
+    fields = ['code', 'station_name']
+    template_name_suffix = '_update_form'
 
 
 def get_rail_tariff_view(request: HttpRequest) -> JsonResponse:
     station_to = request.GET.get('station_to')
     if not station_to:
         return JsonResponse({}, status=400)
+    
+    '''188205 = Калуга'''
+    ''' 060073 МОСКВА-ПАССАЖИРСКАЯ'''
 
     station_from = '223108'
     ''' razan_npz, basis_map.json'''
+    ''' https://vagon1520.ru/stations '''
     cargo = '21105'
     ''' 21105 benzin, 21404 diesel '''
 
-    ves = '52'
+    ves = '55'
     ''' 52 bensin, 55 disel'''
-    
-    
-    rzd_calc_response = get_rail_data_from_spimex(station_from, station_to, cargo, ves)
-    distance = rzd_calc_response['data']['total']['distance']
-    tariff = rzd_calc_response['data']['total']['sumtWithVat']
-    
+
+    rail_tariff = get_rail_tariff_from_spimex(
+        station_to=station_to,
+        station_from=station_from,
+        cargo=cargo,
+        ves=ves
+    )
 
     content = {
-        'distance': distance,
-        'tariff': tariff
+        'from': station_from,
+        'to': station_to,
+        'cargo': cargo,
+        'weight': ves,
+        'distance': rail_tariff.distance,
+        'tariff': rail_tariff.tarif
         }
     return JsonResponse(data=content)
 
+
+def create_rail_tariff_view(request: HttpRequest) -> HttpResponse:
+    
+    get_tariffs_for_all_depots()
+
+    return HttpResponse('succes')
+    

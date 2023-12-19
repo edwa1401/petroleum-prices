@@ -3,7 +3,7 @@ from datetime import date
 
 
 @dataclass(frozen=True, kw_only=True, slots=True)
-class Contract_sh:
+class ContractSchema:
     code: str
     name: str
     base: str
@@ -21,13 +21,13 @@ class Contract_sh:
 
 
 @dataclass(frozen=True, kw_only=True, slots=True)
-class Section_sh:
+class SectionSchema:
     name: str
     metric: str
-    contracts: list[Contract_sh]
+    contracts: list[ContractSchema]
 
 
 @dataclass(frozen=True, kw_only=True, slots=True)
-class TradeDay_sh:
+class TradeDaySchema:
     day: date
-    sections: list[Section_sh]
+    sections: list[SectionSchema]

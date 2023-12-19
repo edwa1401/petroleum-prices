@@ -1,8 +1,6 @@
 import enum
 from dataclasses import dataclass
 from datetime import date
-from pathlib import Path
-import orjson
 
 
 class PetroleumSort(enum.Enum):
@@ -22,22 +20,15 @@ class Metric(enum.Enum):
 
 
 @dataclass(frozen=True, kw_only=True, slots=True)
-class Basis:
-    code: str
-    name: str
-    full_name: str | None
-
-
-@dataclass(frozen=True, kw_only=True, slots=True)
-class ProductKey:
+class ProductKeySchema:
     name: str
     base: str
     base_name: str
 
 
 @dataclass(frozen=True, kw_only=True, slots=True)
-class Product_sh:
-    product_key: ProductKey
+class ProductSchema:
+    product_key: ProductKeySchema
     volume: float
     amount: float
     metric: str
@@ -45,7 +36,7 @@ class Product_sh:
 
 
 @dataclass(frozen=True, kw_only=True, slots=True)
-class Petroleum_sh(Product_sh):
+class PetroleumSchema(ProductSchema):
     sort: PetroleumSort
     density: float
 
@@ -58,44 +49,3 @@ class Petroleum_sh(Product_sh):
         return round(self.price * self.density / 1000, 2) if self.price else None
 
 
-class PetroleumConverter:
-    def __init__(self) -> None:
-        self.petroleum_map: dict[str, PetroleumSort] = {}
-        self.density_map: dict[PetroleumSort, float] = {}
-
-    def _get_petroleums(self) -> dict[PetroleumSort, list[str]]:
-        petroleums = orjson.loads(Path('petroleums.json').read_bytes())
-        return {
-            PetroleumSort[petroleum_sort]: codes
-            for petroleum_sort, codes in petroleums.items()
-        }
-
-    def _get_density(self) -> dict[PetroleumSort, float]:
-        density_map = orjson.loads(Path('density.json').read_bytes())
-        return {
-            PetroleumSort[petroleum_sort]: density
-            for petroleum_sort, density in density_map.items()
-        }
-
-    def load(self) -> None:
-        petroleum = self._get_petroleums()
-        self._petroleum_map = {
-            key: petroleum_sort
-            for petroleum_sort, product_keys in petroleum.items()
-            for key in product_keys
-        }
-        self._density_map = self._get_density()
-
-    def convert(self, product: Product_sh) -> Petroleum_sh:
-        petroleum_sort = self._petroleum_map.get(
-            product.product_key.name, PetroleumSort.OTHER_PRODUCTS
-            )
-        return Petroleum_sh(
-            product_key=product.product_key,
-            volume=product.volume,
-            amount=product.amount,
-            metric=product.metric,
-            day=product.day,
-            sort=petroleum_sort,
-            density=self._density_map[petroleum_sort]
-        )
