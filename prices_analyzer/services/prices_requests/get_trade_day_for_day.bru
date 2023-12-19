@@ -1,0 +1,16 @@
+meta {
+  name: get_trade_day_for_day
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://127.0.0.1:8000/parser/?day=2023-11-30
+  body: none
+  auth: none
+}
+
+query {
+  day: 2023-11-30
+}
+  

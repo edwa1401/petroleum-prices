@@ -16,12 +16,12 @@ def serialize_petroleum(petroleum: Petroleum) -> dict[str, Any]:
 def serialize_prices(prices: Prices) -> dict[str, Any]:
     return {
         'depot': prices.depot.name,
-        'production place': prices.production_place.name,
+        'production_place': prices.production_place.name,
         'sort': prices.petroleum.product_key.sort,
         'metric': prices.petroleum.metric,
         'volume': prices.petroleum.volume,
-        'price at prodiction place': prices.petroleum.price,
-        'rail tariff': prices.rail_tariff.tarif,
-        'price at depot': prices.full_price,
-        'distance from production to depot': prices.rail_tariff.distance
+        'price_at-prodiction place': prices.petroleum.price,
+        'rail_tariff': prices.rail_tariff.tarif,
+        'price_at_depot': prices.full_price,
+        'distance_from_production_to_depot': prices.rail_tariff.distance
         }  

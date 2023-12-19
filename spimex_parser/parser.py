@@ -177,16 +177,22 @@ def create_trade_day(all_values: list[str]) -> TradeDaySchema:
         sections=create_sections(all_values, sections)
     )
 
+class NoTradingAtWeekendsExeption(Exception):
+    pass
 
+# TODO написать тест. Добавить обработку ошибки
 def get_spimex_sheet_for_day(day: datetime.date) -> sheet.Sheet:
     day_for_url = convert_date(day)
-    if day_for_url:
-        url = get_url_to_spimex_data(day_for_url)
-        content = download_file(url)
-        workbook = xlrd.open_workbook(file_contents=content)
-        return workbook.sheet_by_index(0)
+    if not day_for_url:
+        raise NoTradingAtWeekendsExeption
+    
+    url = get_url_to_spimex_data(day_for_url)
+    content = download_file(url)
+    workbook = xlrd.open_workbook(file_contents=content)
+    return workbook.sheet_by_index(0)
 
 
+# TODO написать тест. Добавить обработку ошибки
 def fetch_trade_day(day: datetime.date) -> TradeDaySchema:
     sheet = get_spimex_sheet_for_day(day)
     raw_data = get_all_cell_values_from_sheet(sheet)

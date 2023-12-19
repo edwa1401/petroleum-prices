@@ -1,0 +1,15 @@
+meta {
+  name: get_rail_tariff
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://127.0.0.1:8000/rail/tarif/get/?station_to=188205
+  body: none
+  auth: none
+}
+
+query {
+  station_to: 188205
+}
