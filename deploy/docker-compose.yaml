@@ -1,20 +1,18 @@
 services:
   redis:
-    image: "redis:alpine"
+    image: "redis"
     ports:
       - "6379:6379"
-    container_name: redis
 
   web:
     env_file:
       - .env
     restart: always
-    build: .
+    image: ghcr.io/edwa1401/petroleum-prices:main
     command: python manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
     
-
   postgresdb:
     image: postgres
     restart: always
@@ -24,10 +22,9 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
-    container_name: postgresdb
 
-  celery:
+  worker:
     env_file:
       - .env
-    build: .
+    image: ghcr.io/edwa1401/petroleum-prices:main
     command: celery -A petroleum_prices worker --beat --scheduler django --loglevel=info
