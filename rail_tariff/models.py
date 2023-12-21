@@ -4,7 +4,7 @@ from django.urls import reverse
 
 
 class RzdCode(TimeStampedModel, models.Model):
-    code = models.SmallIntegerField(unique=True)
+    code = models.IntegerField(unique=True)
     station_name = models.CharField(max_length=1000, blank=True)
 
     def get_absolute_url(self) -> str:
@@ -28,7 +28,7 @@ class RailTariff(TimeStampedModel, models.Model):
         )
     weight = models.SmallIntegerField(choices=[(52, 'AB'), (55, 'DT')])
     cargo = models.SmallIntegerField(choices=[(21105, 'AB'), (21404, 'DT')])
-    distance = models.SmallIntegerField()
+    distance = models.CharField(max_length=1000, blank=True)
     tarif = models.DecimalField(max_digits=20, decimal_places=2)
 
     def __str__(self) -> str:

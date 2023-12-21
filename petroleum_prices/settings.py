@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 from pathlib import Path
 import os
-from os.path import join, dirname
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -91,11 +90,15 @@ WSGI_APPLICATION = 'petroleum_prices.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': "django.db.backends.postgresql",
+        'NAME': os.environ['POSTGRES_DB'],
+        'USER': os.environ['POSTGRES_USER'],
+        'PASSWORD': os.environ['POSTGRES_PASSWORD'],
+        "HOST": os.environ['POSTGRES_HOST'],
+        "PORT": "5432",
     }
 }
-
+# change environment var to env
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -144,7 +147,7 @@ LOGIN_REDIRECT_URL = '/petroleum_filter/'
 
 # Celery settings
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = os.environ['CELERY_BROKER_URL']
 
 CELERY_TIMEZONE = 'Europe/Moscow'
 CELERY_TASK_TRACK_STARTED = True
@@ -174,7 +177,7 @@ LOGGING = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": f"redis://127.0.0.1:6379/1",
+        "LOCATION": os.environ['REDIS_LOCATION_CASH_URL'],
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },

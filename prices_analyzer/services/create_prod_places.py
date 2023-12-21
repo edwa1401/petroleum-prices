@@ -1,4 +1,5 @@
 import csv
+from typing import Any
 
 from prices_analyzer.models import Basis, ProductionPlace
 from rail_tariff.models import RzdCode
@@ -13,13 +14,14 @@ def create_prod_place_map() -> dict[str, list[str]]:
     return prod_place_map
 
 
-def create_prod_places() -> None:
+def create_prod_places() -> Any:
     prod_places = create_prod_place_map()
     for prod_place in prod_places:
         basis, create = Basis.objects.get_or_create(code=prod_place)
-        rzd_code, create = RzdCode.objects.get_or_create(code=prod_places[prod_place][0])
+        rzd_code, create = RzdCode.objects.get_or_create(code=int(prod_places[prod_place][0]))
         prod_place, create = ProductionPlace.objects.get_or_create(
             basis=basis,
             rzd_code=rzd_code,
             name=prod_places[prod_place][1]
             )
+

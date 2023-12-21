@@ -13,6 +13,9 @@ logger = logging.getLogger(__name__)
 def get_period_for_petroleums(
         start_date: datetime.date,
         end_date: datetime.date) -> list[datetime.date]:
+
+# TODO 1. разделить фнкцию на простые куски 2. Создать функцию, которая будет принимать depot
+# и создавать prices для всех существующих petroleums
     
     delta = end_date - start_date
     
@@ -29,14 +32,14 @@ def create_prices_for_all_depots_for_day(
     production_places = ProductionPlace.objects.all(
     ).prefetch_related('rzd_code').prefetch_related('basis')
 
-    logger.info('production places=%s', production_places)
+    # logger.info('production places=%s', production_places)
 
     production_places_bases = production_places.values_list('basis__code', flat=True)
 
     petroleums = Petroleum.objects.prefetch_related('basis').prefetch_related(
         'product_key').filter(
         Q(day=day)|
-        Q(basis__in=production_places_bases)|
+        Q(basis__code__in=production_places_bases)|
         Q(price__isnull=False)
         ).exclude(product_key__sort='Other products')
     
@@ -45,7 +48,8 @@ def create_prices_for_all_depots_for_day(
     rail_tariffs = RailTariff.objects.all().prefetch_related(
         'rail_code_base_to').prefetch_related('rail_code_base_from')
     
-    logger.info('rail_tariffs=%s', rail_tariffs)
+    # logger.info(
+    #     'rail_tariffs=%s', rail_tariffs)
 
     for depot in depots:
         for production_place in production_places:

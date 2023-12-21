@@ -1,0 +1,15 @@
+meta {
+  name: create_prices
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://127.0.0.1:8000/analyzer/prices/create/?day=2023-12-01
+  body: none
+  auth: none
+}
+
+query {
+  day: 2023-12-01
+}

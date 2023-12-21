@@ -2,8 +2,6 @@ FROM python:3.11.7
 
 WORKDIR /app
 
-# ENV PDM_USE_VENV=0
-
 RUN pip install --no-cache-dir -U pip setuptools wheel
 RUN pip install --no-cache-dir -U pdm
 

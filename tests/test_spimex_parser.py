@@ -203,5 +203,3 @@ def test__get_spimex_sheet_for_day__fail_at_weekends():
         assert parser.get_spimex_sheet_for_day(day=datetime.datetime(2023, 12, 16))
         assert parser.get_spimex_sheet_for_day(day=datetime.datetime(2023, 12, 6))
 
-
-    
