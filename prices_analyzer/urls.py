@@ -1,13 +1,13 @@
 from django.urls import include, path
 
-from prices_analyzer import views, api_views
+from prices_analyzer import api_views_old, views
 
 app_name = 'prices_analyzer'
 
 prices_pattern = (
     [
         path('', views.PricesListView.as_view(), name='list'),
-        path('api/', api_views.get_prices_for_period_view),
+        path('api/', api_views_old.get_prices_for_period_view),
         path('create/', views.create_prices_view),
     ], 
     'prices'
