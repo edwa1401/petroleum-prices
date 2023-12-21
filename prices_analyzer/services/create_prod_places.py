@@ -14,7 +14,7 @@ def create_prod_place_map() -> dict[str, list[str]]:
     return prod_place_map
 
 
-def create_prod_places() -> Any:
+def create_prod_places() -> None:
     prod_places = create_prod_place_map()
     for prod_place in prod_places:
         basis, create = Basis.objects.get_or_create(code=prod_place)
