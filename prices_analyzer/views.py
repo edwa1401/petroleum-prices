@@ -40,6 +40,8 @@ def get_product_places_view(request: HttpRequest) -> HttpResponse:
 class CreateDepotView(CreateView):
     model = Depot
     fields = ['name', 'user', 'rzd_code']
+# дополнительно должна вызываться вьюха с get tafiff for depot
+# следом должны создаться prices для всех petroleums в базе для этого depot
 
 
 class UpdateDepotView(UpdateView):

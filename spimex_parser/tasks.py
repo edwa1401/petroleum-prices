@@ -2,7 +2,7 @@
 import datetime
 from celery import shared_task
 from celery.schedules import crontab
-from petroleum_prices.celery import app
+from petroleum_prices.tasks import app
 from typing import Any
 from spimex_parser.parser import save_trade_day_petroleums_to_db
 from prices_analyzer.services.create_prices import create_prices_for_all_depots_for_day

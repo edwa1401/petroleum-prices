@@ -17,9 +17,10 @@ def create_prod_places() -> None:
     prod_places = create_prod_place_map()
     for prod_place in prod_places:
         basis, create = Basis.objects.get_or_create(code=prod_place)
-        rzd_code, create = RzdCode.objects.get_or_create(code=prod_places[prod_place][0])
+        rzd_code, create = RzdCode.objects.get_or_create(code=int(prod_places[prod_place][0]))
         prod_place, create = ProductionPlace.objects.get_or_create(
             basis=basis,
             rzd_code=rzd_code,
             name=prod_places[prod_place][1]
             )
+

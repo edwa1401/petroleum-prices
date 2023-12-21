@@ -189,22 +189,17 @@ def test__convert_contract__fail_return_assertion_error_for_different_result_in_
         assert parser.convert_contract(contract=contract) == expected
 
 
-def test__get_spimex_sheet_for_day__open_first_sheet_from_excel(create_day, xlrd_open_workbook_mock):
+def test__get_spimex_sheet_for_day__open_first_sheet_from_excel(xlrd_open_workbook_mock):
 
-    day = create_day('2023-12-08')
 
     parser.get_spimex_sheet_for_day(datetime.datetime(2023, 12, 8))
     xlrd_open_workbook_mock.return_value.sheet_by_index.assert_called_once_with(0)
 
 
+def test__get_spimex_sheet_for_day__fail_at_weekends():
 
-# def test__fetch_trade_day__success(create_day, create_trade_day):
-    
-#     day = create_day('2023-12-11')
-#     expected = create_trade_day(input_day='11.12.2023')
+    with pytest.raises(parser.NoTradingAtWeekendsExeption):
+        assert parser.get_spimex_sheet_for_day(day=datetime.datetime(2023, 12, 17))
+        assert parser.get_spimex_sheet_for_day(day=datetime.datetime(2023, 12, 16))
+        assert parser.get_spimex_sheet_for_day(day=datetime.datetime(2023, 12, 6))
 
-#     with patch('spimex_parser.parser.get_spimex_sheet_for_day') as get_spimex_sheet_for_day_mock:
-#         get_spimex_sheet_for_day_mock.return_value
-    
-#         assert parser.fetch_trade_day(day) == expected
-    

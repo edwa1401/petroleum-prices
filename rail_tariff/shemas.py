@@ -8,7 +8,6 @@ import requests
 from bs4 import BeautifulSoup
 from pydantic import BaseModel, Field
 
-from config import PAYLOAD_DATA
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +34,14 @@ class RailTariff(BaseModel):
     distance: int
     tarif: decimal.Decimal = Field(alias='sumtWithVat')
 
+
+SPIMEX_RZD_CARGO_TYPE = '43'
+SPIMEX_RZD_CARGO_TONNAGE = '66'
+NUMBER_OF_VAGONS = '1'
+NUMBER_OF_SECURED_VAGONS = '1'
+NUMBER_OF_CONDUCTORS = '0'
+NUMBER_OF_AXLES = '4'
+TYPE_OF_VAGON_POSSESSION = '2'
 
 class RailTariffClient:
     def __init__(self) -> None:
@@ -72,7 +79,7 @@ class RailTariffClient:
         response.raise_for_status()
 
         return self._get_sessid_from_response(response)
-    
+
 
     def get_rail_tariff(
             self,
@@ -87,17 +94,17 @@ class RailTariffClient:
         data = {
             'action': 'getCalculation',
             'sessid': session_id,
-            'type': PAYLOAD_DATA.get('type'),
+            'type': SPIMEX_RZD_CARGO_TYPE,
             'st1': station_from,
             'st2': station_to,
             'kgr': cargo,
             'ves': ves,
-            'gp': PAYLOAD_DATA.get('gp'),
-            'nv': PAYLOAD_DATA.get('nv'),
-            'nvohr': PAYLOAD_DATA.get('nvohr'),
-            'nprov': PAYLOAD_DATA.get('nprov'),
-            'osi': PAYLOAD_DATA.get('osi'),
-            'sv': PAYLOAD_DATA.get('sv'),
+            'gp': SPIMEX_RZD_CARGO_TONNAGE,
+            'nv': NUMBER_OF_VAGONS,
+            'nvohr': NUMBER_OF_SECURED_VAGONS,
+            'nprov': NUMBER_OF_CONDUCTORS,
+            'osi': NUMBER_OF_AXLES,
+            'sv': TYPE_OF_VAGON_POSSESSION,
         }
         response = self.session.post(url=self.url_tarif_calc, data=data)
         response.raise_for_status()
@@ -106,4 +113,5 @@ class RailTariffClient:
 
         total = payload['data']['total']
         return RailTariff(**total)
+
 

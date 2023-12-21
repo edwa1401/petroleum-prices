@@ -8,11 +8,28 @@
             "name": "petroleum-prices",
             "type": "python",
             "request": "launch",
+            "console": "internalConsole",
             "program": "${workspaceFolder}/manage.py",
             "args": [
                 "runserver"
             ],
             "django": true,
+            "justMyCode": true
+        },
+        {
+            "name": "celery",
+            "type": "python",
+            "request": "launch",
+            "console": "internalConsole",
+            "module": "celery",
+            "args": [
+                "-A",
+                "petroleum_prices",
+                "worker",
+                "--beat",
+                "--scheduler",
+                "django",
+                "--loglevel=info"],
             "justMyCode": true
         }
     ]
