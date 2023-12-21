@@ -7,7 +7,6 @@ from dataclasses import dataclass
 import requests
 from bs4 import BeautifulSoup
 from pydantic import BaseModel, Field
-from config import PAYLOAD_DATA
 
 
 logger = logging.getLogger(__name__)

@@ -1,5 +1,4 @@
 import csv
-from typing import Any
 
 from prices_analyzer.models import Basis, ProductionPlace
 from rail_tariff.models import RzdCode
