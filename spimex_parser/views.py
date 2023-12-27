@@ -17,28 +17,25 @@ from spimex_parser.parser import (
 def trade_day_to_db_view(request: HttpRequest) -> HttpResponse:
     raw_day = request.GET.get('day')
     if not raw_day:
-        return HttpResponseBadRequest('Не задана дата')
+        return HttpResponseBadRequest('No day in request')
     
     
     day = get_date(raw_day)
-    if not check_trade_day_already_exists_in_db(day=day):
+    if check_trade_day_already_exists_in_db(day=day):
+        return HttpResponse('trade day for {day} already saved'.format(day=day))
 
-        trade_day = fetch_trade_day(day=day)
-        products = get_products_from_trade_day(trade_day=trade_day)
-        petroleums = get_petroleums_from_products(products=products)
+    trade_day = fetch_trade_day(day=day)
+    products = get_products_from_trade_day(trade_day=trade_day)
+    petroleums = get_petroleums_from_products(products=products)
 
 
-        try:
-            save_trade_day_to_db(trade_day)
-            save_petroleums_to_db(petroleums)
-            result = 'success'
+    try:
+        save_trade_day_to_db(trade_day)
+        save_petroleums_to_db(petroleums)
+        return HttpResponse('Trade day and petroleums for {day} successfully saved'.format(day=day))
 
-        
-        except (TypeError, ValueError) as e:
-            result = f'Incorrect data format {e}'
-    else:
-        
-        result = f'trade day for {day} already saved'
-    return HttpResponse(result)
+    except (TypeError, ValueError) as e:
+        return HttpResponse(f'Incorrect data format {e}')
+
 
 

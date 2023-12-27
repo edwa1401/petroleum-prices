@@ -5,7 +5,7 @@
 groups = ["default", "test", "linter", "dev", "pytest-cov"]
 strategy = ["cross_platform"]
 lock_version = "4.4"
-content_hash = "sha256:f5bb058a30c295b3df5619d98e0e8388c9f37b1f2f43f81c265e51474cfab915"
+content_hash = "sha256:9305adb8d0ef0b64165be3a5eccf473a6bc4abcfd864781bb3e860ee97876ed8"
 
 [[package]]
 name = "amqp"
@@ -484,6 +484,19 @@ dependencies = [
 files = [
     {file = "Faker-21.0.0-py3-none-any.whl", hash = "sha256:ff61cca42547795bee8a11319792a8fee6d0f0cd191e831f7f3050c5851fcd8a"},
     {file = "Faker-21.0.0.tar.gz", hash = "sha256:2d8a350e952225a145307d7461881c44a1c9320e90fbe8bd903d5947f133f3ec"},
+]
+
+[[package]]
+name = "gunicorn"
+version = "21.2.0"
+requires_python = ">=3.5"
+summary = "WSGI HTTP Server for UNIX"
+dependencies = [
+    "packaging",
+]
+files = [
+    {file = "gunicorn-21.2.0-py3-none-any.whl", hash = "sha256:3213aa5e8c24949e792bcacfc176fef362e7aac80b76c56f6b5122bf350722f0"},
+    {file = "gunicorn-21.2.0.tar.gz", hash = "sha256:88ec8bff1d634f98e61b9f65bc4bf3cd918a90806c6f5c48bc5603849ec81033"},
 ]
 
 [[package]]
