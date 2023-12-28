@@ -2,19 +2,22 @@ services:
   redis:
     image: "redis:alpine"
     ports:
-      - "6379:6379"
-    container_name: redis
+      - 6379:6379
 
   web:
     env_file:
       - .env
     restart: always
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
-    ports:
-      - "8000:8000"
+    command: gunicorn petroleum_prices.wsgi:application --bind 0.0.0.0:8000
+    expose:
+      - 8000
+    volumes:
+      - static_volume:/static
+      - media_volume:/media
+    depends_on:
+      - postgresdb
     
-
   postgresdb:
     image: postgres
     restart: always
@@ -23,11 +26,24 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
-      - "5432:5432"
-    container_name: postgresdb
+      - 5432:5432
 
-  celery:
+  worker:
     env_file:
       - .env
     build: .
     command: celery -A petroleum_prices worker --beat --scheduler django --loglevel=info
+    
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/static
+      - media_volume:/media
+    ports:
+      - 1337:80
+    depends_on:
+      - web
+
+volumes:
+  static_volume:
+  media_volume:

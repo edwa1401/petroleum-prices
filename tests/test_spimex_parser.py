@@ -196,10 +196,16 @@ def test__get_spimex_sheet_for_day__open_first_sheet_from_excel(xlrd_open_workbo
     xlrd_open_workbook_mock.return_value.sheet_by_index.assert_called_once_with(0)
 
 
-def test__get_spimex_sheet_for_day__fail_at_weekends():
+@pytest.mark.parametrize(
+        ('data'),
+        [
+            (datetime.datetime(2023, 12, 17)),
+            (datetime.datetime(2023, 12, 16)),
+            (datetime.datetime(2023, 12, 9))
+        ]
+)
+def test__get_spimex_sheet_for_day__fail_at_weekends(data):
 
     with pytest.raises(parser.NoTradingAtWeekendsExeption):
-        assert parser.get_spimex_sheet_for_day(day=datetime.datetime(2023, 12, 17))
-        assert parser.get_spimex_sheet_for_day(day=datetime.datetime(2023, 12, 16))
-        assert parser.get_spimex_sheet_for_day(day=datetime.datetime(2023, 12, 6))
+        assert parser.get_spimex_sheet_for_day(day=data)
 
