@@ -7,10 +7,10 @@ services:
       - .env
     restart: always
     image: ghcr.io/edwa1401/petroleum-prices:main
-    command: sh -c 'python manage.py makemigrations &&
+    command: sh -c "python manage.py makemigrations &&
                     python manage.py migrate &&
-                    gunicorn petroleum_prices.wsgi:application --bind 0.0.0.0:8000'
-                    
+                    gunicorn petroleum_prices.wsgi:application --bind 0.0.0.0:8000
+                    "
     expose:
       - 8000
     volumes:
@@ -38,21 +38,15 @@ services:
     volumes:
       - static_volume:/static
       - media_volume:/media
-      - ./certbot/conf:/etc/letsencrypt:ro
-      - ./certbot/www:/var/www/certbot:ro
+      - ./petroleum-prices.crt:/nginx/ssl/petroleum-prices.crt:ro
+      - ./petroleum-prices.key:/nginx/ssl/petroleum-prices.key:ro
+      - ./ca.crt:/nginx/ssl/ca.crt:ro
 
     ports:
       - 80:80
       - 443:443
     depends_on:
       - web
-
-  certbot:
-      image: certbot/certbot
-      volumes:
-        - ./certbot/conf:/etc/letsencrypt:rw
-        - ./certbot/www:/var/www/cerboot:rw
-      # command: certonly --webroot --webroot-path=/var/www/certbot/ --email edwa1401@me.com --agree-tos --no-eff-email -d petroleum-prices.ru -d www.petroleum-prices.ru
 
 volumes:
   static_volume:
