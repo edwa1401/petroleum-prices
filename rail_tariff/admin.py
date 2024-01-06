@@ -1,3 +1,6 @@
-from django.contrib import admin   # noqa: F401
+from django.contrib import admin
 
-# Register your models here.
+from rail_tariff.models import RzdCode, RailTariff
+
+admin.site.register(RzdCode)
+admin.site.register(RailTariff)
