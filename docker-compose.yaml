@@ -9,7 +9,9 @@ services:
       - .env
     restart: always
     build: .
-    command: gunicorn petroleum_prices.wsgi:application --bind 0.0.0.0:8000
+    command: sh -c 'python manage.py makemigrations &&
+                python manage.py migrate &&
+                gunicorn petroleum_prices.wsgi:application --bind 0.0.0.0:8000'
     expose:
       - 8000
     volumes:
@@ -35,8 +37,9 @@ services:
     command: celery -A petroleum_prices worker --beat --scheduler django --loglevel=info
     
   nginx:
-    build: ./nginx
+    image: nginx
     volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - static_volume:/static
       - media_volume:/media
     ports:
