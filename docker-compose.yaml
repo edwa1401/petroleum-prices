@@ -12,13 +12,9 @@ services:
     command: sh -c 'python manage.py makemigrations &&
                 python manage.py migrate &&
                 gunicorn petroleum_prices.wsgi:application --bind 0.0.0.0:8000'
-    expose:
-      - 8000
     volumes:
       - static_volume:/static
       - media_volume:/media
-    depends_on:
-      - postgresdb
     
   postgresdb:
     image: postgres
