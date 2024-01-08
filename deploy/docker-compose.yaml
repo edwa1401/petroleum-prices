@@ -9,15 +9,13 @@ services:
     image: ghcr.io/edwa1401/petroleum-prices:main
     command: sh -c "python manage.py makemigrations &&
                     python manage.py migrate &&
-                    gunicorn petroleum_prices.wsgi:application --bind 0.0.0.0:8000
-                    "
-    expose:
-      - 8000
+                    gunicorn petroleum_prices.wsgi:application --bind 0.0.0.0:8000"
     volumes:
       - static_volume:/static
       - media_volume:/media
-    depends_on:
-      - postgresdb
+    # depends:
+    #   - postgresdb:
+    #       condition: service_healthy
     
   postgresdb:
     image: postgres
@@ -26,6 +24,12 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    # добавить периодическую проверку статуса
+    # healthcheck:
+    #   test: ["CMD-SHELL", "pg_isready -U postgres"]
+    #   interval: 5s
+    #   timeout: 5s
+    #   retries: 5
 
   worker:
     env_file:
@@ -38,10 +42,8 @@ services:
     volumes:
       - static_volume:/static
       - media_volume:/media
-      - ./nginx.conf:/etc/nginx/conf.d:ro
-      - ./petroleum-prices.crt:/nginx/ssl/petroleum-prices.crt:ro
-      - ./petroleum-prices.key:/nginx/ssl/petroleum-prices.key:ro
-      - ./ca.crt:/nginx/ssl/ca.crt:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
 
     ports:
       - 80:80
