@@ -31,6 +31,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(',')
 
+CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS')
+CSRF_ALLOWED_ORIGINS = os.environ.get('CSRF_ALLOWED_ORIGINS')
+CORS_ORIGINS_WHITELIST = os.environ.get('CORS_ORIGINS_WHITELIST')
+
 AUTH_USER_MODEL = 'users.User'
 
 
@@ -51,7 +55,6 @@ INSTALLED_APPS = [
     'users',
     'django_celery_results',
     'django_celery_beat',
-
 ]
 
 MIDDLEWARE = [
