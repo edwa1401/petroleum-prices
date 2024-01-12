@@ -70,6 +70,7 @@ def create_prices_view(request: HttpRequest) -> HttpResponse:
 
     return HttpResponse(result)
 
-        
+
+
 
 

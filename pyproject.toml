@@ -28,6 +28,10 @@ dependencies = [
     "python-dotenv>=1.0.0",
     "psycopg[binary]>=3.1.16",
     "gunicorn>=21.2.0",
+    "djangorestframework>=3.14.0",
+    "markdown>=3.5.2",
+    "djangorestframework-stubs>=3.14.5",
+    "django-url-filter>=0.3.15",
 ]
 requires-python = ">=3.11"
 readme = "README.md"
@@ -35,7 +39,7 @@ license = {text = "MIT"}
 
 
 [tool.mypy]
-plugins = ['mypy_django_plugin.main']
+plugins = ['mypy_django_plugin.main', 'mypy_drf_plugin.main']
 ignore_missing_imports = false
 disallow_incomplete_defs = true
 disallow_untyped_defs = true
@@ -49,6 +53,11 @@ disable_error_code = 'var-annotated'
 
 [[tool.mypy.overrides]]
 module = "django_extensions.*"
+ignore_missing_imports = true
+
+
+[[tool.mypy.overrides]]
+module = "rest_framework.*"
 ignore_missing_imports = true
 
 
