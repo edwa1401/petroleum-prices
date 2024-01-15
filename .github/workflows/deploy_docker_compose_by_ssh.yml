@@ -12,8 +12,11 @@ jobs:
         # Hack to prevent "Host key verification failed". Should be replaced with a ssh-keyscan based solution
         run: echo "StrictHostKeyChecking no" >> ~/.ssh/config
 
-# name: Docker pull
-#         run: docker-compose up -d
-#         env:
-#           COMPOSE_DOCKER_CLI_BUILD: 0
-#           DOCKER_HOST: "ssh://gha@〈HOSTNAME〉"
+name: Docker compose pull
+        run: docker-compose pull
+
+name: Docker compose up
+        run: docker-compose up -d
+        env:
+          COMPOSE_DOCKER_CLI_BUILD: 0
+          DOCKER_HOST: "ssh://DEPLOYUSER@〈158.160.72.122〉"
