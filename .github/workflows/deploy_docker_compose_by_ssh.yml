@@ -1,23 +1,23 @@
 name: Deploy
 on: [push]
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: webfactory/ssh-agent@v0.5.4
-        with:
-          ssh-private-key: ${{ secrets.DEPLOYUSER_SSH_PRIVATE_KEY }}
-          
-  - name: Disable Host key verification
-        # Hack to prevent "Host key verification failed". Should be replaced with a ssh-keyscan based solution
-        run: echo "StrictHostKeyChecking no" >> ~/.ssh/config
-
-name: Docker compose pull
-        run: docker-compose pull
-
-name: Docker compose up
-        run: docker-compose up -d
-        env:
-          COMPOSE_DOCKER_CLI_BUILD: 0
-          DOCKER_HOST: "ssh://DEPLOYUSER@〈158.160.72.122〉"
+  jobs:
+    deploy:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+        - uses: webfactory/ssh-agent@v0.5.4
+          with:
+            ssh-private-key: ${{ secrets.DEPLOYUSER_SSH_PRIVATE_KEY }}
+            
+    - name: Disable Host key verification
+          # Hack to prevent "Host key verification failed". Should be replaced with a ssh-keyscan based solution
+          run: echo "StrictHostKeyChecking no" >> ~/.ssh/config
+  
+    name: Docker compose pull
+            run: docker-compose pull
+    
+    name: Docker compose up
+            run: docker-compose up -d
+            env:
+              COMPOSE_DOCKER_CLI_BUILD: 0
+              DOCKER_HOST: "ssh://DEPLOYUSER@〈158.160.72.122〉"
