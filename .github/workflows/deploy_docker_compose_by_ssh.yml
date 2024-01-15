@@ -6,7 +6,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: webfactory/ssh-agent@v0.5.4
         with:
-          ssh-private-key: ${{ secrets.DEPLOYUSER_SSH_PRIVATE_KEY }}
+            ssh-private-key: ${{ secrets.DEPLOYUSER_SSH_PRIVATE_KEY }}
       - name: Disable Host key verification
             # Hack to prevent "Host key verification failed". Should be replaced with a ssh-keyscan based solution
             run: echo "StrictHostKeyChecking no" >> ~/.ssh/config
