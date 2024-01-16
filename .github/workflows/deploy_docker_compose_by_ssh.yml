@@ -15,6 +15,12 @@ jobs:
       - name: Disable Host key verification
         run: echo "StrictHostKeyChecking no" >> ~/.ssh/config
 
+      - name: Pwd
+        run: pwd
+
+      - name: Ls -l
+        run: ls -la
+        
       - name: Pull image
         run: docker-compose pull
 
