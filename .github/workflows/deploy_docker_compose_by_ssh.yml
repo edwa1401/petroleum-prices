@@ -13,7 +13,7 @@ jobs:
         run: echo "StrictHostKeyChecking no" >> ~/.ssh/config
 
       - name: Copy docker-compose.yaml with tags
-        run: scp ssh "deployuser@petroleum-prices.ru:./deploy/doccker-compose.yaml ~/"
+        run: scp ssh "deployuser@petroleum-prices.ru:./deploy/docker-compose.yaml ~/"
         
       - name: Pull image
         run: ssh deployuser@petroleum-prices.ru "docker compose pull"
