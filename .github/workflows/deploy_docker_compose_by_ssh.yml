@@ -5,16 +5,17 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: webfactory/ssh-agent@v0.5.4
+        env:
+            COMPOSE_DOCKER_CLI_BUILD: 0
+            DOCKER_HOST: "ssh://deployuser@petroleum-prices.ru"
         with:
           ssh-private-key: ${{ secrets.DEPLOYUSER_SSH_PRIVATE_KEY }}
-          
-      - name: Disable Host key verification
-            # Hack to prevent "Host key verification failed". Should be replaced with a ssh-keyscan based solution
-            run: echo "StrictHostKeyChecking no" >> ~/.ssh/config
 
-      - name: Docker compose create
-              run: docker-compose pull
-              run: docker-compose up -d
-              env:
-                COMPOSE_DOCKER_CLI_BUILD: 0
-                DOCKER_HOST: "ssh://DEPLOYUSER@〈158.160.72.122〉"
+      - name: Disable Host key verification
+        run: echo "StrictHostKeyChecking no" >> ~/.ssh/config
+
+      - name: Pull image
+        run: docker-compose pull
+
+      - name: Run servises
+        run: docker-compose up -d
