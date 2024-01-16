@@ -18,6 +18,9 @@ jobs:
       - name: Pwd
         run: pwd
 
+      - name: Hostname
+        run: hostname
+
       - name: Ls -l
         run: ls -la
         
