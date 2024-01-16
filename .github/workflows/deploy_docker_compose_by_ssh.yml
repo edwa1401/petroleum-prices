@@ -6,26 +6,18 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: webfactory/ssh-agent@v0.5.4
-        env:
-            COMPOSE_DOCKER_CLI_BUILD: 0
-            DOCKER_HOST: "ssh://deployuser@petroleum-prices.ru"
         with:
           ssh-private-key: ${{ secrets.DEPLOYUSER_SSH_PRIVATE_KEY }}
 
       - name: Disable Host key verification
         run: echo "StrictHostKeyChecking no" >> ~/.ssh/config
 
-      - name: Pwd
-        run: pwd
-
-      - name: Hostname
-        run: hostname
-
-      - name: Ls -l
-        run: ls -la
-        
       - name: Pull image
-        run: docker-compose pull
-
+        run: ssh deployuser@petroleum-prices.ru "docker-compose pull"
+        
+      - name: Stop services
+        run: ssh deployuser@petroleum-prices.ru "docker compose stop web worker"
+        
       - name: Run servises
-        run: docker-compose up -d
+        run: ssh deployuser@petroleum-prices.ru "docker-compose up -d web worker" 
+
