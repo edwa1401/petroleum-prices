@@ -12,6 +12,9 @@ jobs:
       - name: Disable Host key verification
         run: echo "StrictHostKeyChecking no" >> ~/.ssh/config
 
+      - name: Copy docker-compose.yaml with tags
+        run: deployuser@edwa1401 $ scp ssh deployuser@petroleum-prices.ru:./deploy/doccker-compose.yaml ~/
+        
       - name: Pull image
         run: ssh deployuser@petroleum-prices.ru "docker compose pull"
         
