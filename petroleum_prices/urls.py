@@ -28,5 +28,6 @@ urlpatterns = [
     path('parser/', include('spimex_parser.urls')),
     path('users/', include('users.urls')),
     path('drf/', include('drf.urls')),
+    path("__debug__/", include("debug_toolbar.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

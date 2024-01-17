@@ -1,0 +1,17 @@
+meta {
+  name: get_prices_api
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://127.0.0.1:8000/analyzer/prices/api/?start_day=2023-12-04&end_day=2023-12-04&depot_name=Тамбовская нб
+  body: none
+  auth: none
+}
+
+query {
+  start_day: 2023-12-04
+  end_day: 2023-12-04
+  depot_name: Тамбовская нб
+}

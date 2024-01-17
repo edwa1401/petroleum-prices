@@ -1,15 +1,19 @@
 import datetime
+import logging
+from typing import Any
 
 from django.db.models import Q
 from django.http import HttpRequest, JsonResponse
 from django_stubs_ext import QuerySetAny
+from rest_framework import filters, generics
 
 from prices_analyzer.models import Depot, Prices
+from prices_analyzer.serializers import PricesSerializer
 from prices_analyzer.services.create_prices import get_period_for_petroleums
 from prices_analyzer.services.serialyzer import serialize_prices
-from rest_framework import generics, filters
-from prices_analyzer.serializers import PricesSerializer
-from typing import Any
+
+
+logger = logging.getLogger(__name__)
 
 
 def get_prices_for_period_view(request: HttpRequest) -> JsonResponse:
@@ -31,7 +35,7 @@ def get_prices_for_period_view(request: HttpRequest) -> JsonResponse:
     period = get_period_for_petroleums(start_date=start_day, end_date=end_day)
 
     prices = Prices.objects.filter(
-        Q(petroleum__day__in=period)|
+        Q(petroleum__day__in=period),
         Q(depot=depot))
     
 
@@ -47,11 +51,13 @@ def get_prices_for_period_view(request: HttpRequest) -> JsonResponse:
 class PricesListView(generics.ListAPIView):
 
     serializer_class = PricesSerializer
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['petroleum__day', 'petroleum__product_key__sort']
+    # filter_backends = [filters.SearchFilter]
+    # search_fields = ['petroleum__day', 'petroleum__product_key__sort']
 
     def get_queryset(self) -> QuerySetAny[Any, Any]:
-        # prices = Prices.objects.all()
+        prices = Prices.objects.all().prefetch_related('depot').prefetch_related(
+            'petroleum').prefetch_related('production_place').prefetch_related('rail_tariff')
+        # logger.debug('prices=%s', prices)
 
         raw_start_day = self.request.query_params.get('start_day')
         raw_end_day = self.request.query_params.get('end_day')
@@ -63,8 +69,8 @@ class PricesListView(generics.ListAPIView):
 
             period = get_period_for_petroleums(start_date=start_day, end_date=end_day)
 
-            prices = Prices.objects.filter(
-                Q(petroleum__day__in=period)|
+            prices = prices.filter(
+                Q(petroleum__day__in=period),
                 Q(depot__name=depot_name))
             
         return prices
