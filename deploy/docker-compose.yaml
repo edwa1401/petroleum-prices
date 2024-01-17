@@ -1,11 +1,12 @@
 services:
   redis:
     image: "redis"
+    restart: unless-stopped
 
   web:
     env_file:
       - .env
-    restart: always
+    restart: unless-stopped
     image: ghcr.io/edwa1401/petroleum-prices:main
     command: sh -c "python manage.py makemigrations &&
                     python manage.py migrate &&
@@ -19,7 +20,7 @@ services:
     
   postgresdb:
     image: postgres
-    restart: always
+    restart: unless-stopped
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
@@ -33,11 +34,13 @@ services:
   worker:
     env_file:
       - .env
+    restart: unless-stopped
     image: ghcr.io/edwa1401/petroleum-prices:main
     command: celery -A petroleum_prices worker --beat --scheduler django --loglevel=info
 
   nginx:
     image: nginx
+    restart: unless-stopped
     volumes:
       - static_volume:/static
       - media_volume:/media
