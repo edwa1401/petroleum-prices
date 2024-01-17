@@ -19,10 +19,15 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('analyzer/', include('prices_analyzer.urls')),
     path('rail/', include('rail_tariff.urls', namespace='rail_tariff')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('parser/', include('spimex_parser.urls')),
+    path('users/', include('users.urls')),
+    path('drf/', include('drf.urls')),
+    path("__debug__/", include("debug_toolbar.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

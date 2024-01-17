@@ -13,9 +13,9 @@ services:
     volumes:
       - static_volume:/static
       - media_volume:/media
-    # depends:
-    #   - postgresdb:
-    #       condition: service_healthy
+    depends_on:
+      postgresdb:
+        condition: service_healthy
     
   postgresdb:
     image: postgres
@@ -24,12 +24,11 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    # добавить периодическую проверку статуса
-    # healthcheck:
-    #   test: ["CMD-SHELL", "pg_isready -U postgres"]
-    #   interval: 5s
-    #   timeout: 5s
-    #   retries: 5
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   worker:
     env_file:

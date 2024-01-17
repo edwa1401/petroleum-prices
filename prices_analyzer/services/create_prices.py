@@ -27,7 +27,7 @@ def create_prices_for_all_depots_for_day(
     
     depots = Depot.objects.all().prefetch_related('rzd_code')
 
-    logger.info('depots=%s', depots)
+    # logger.info('depots=%s', depots)
     
     production_places = ProductionPlace.objects.all(
     ).prefetch_related('rzd_code').prefetch_related('basis')
@@ -43,7 +43,7 @@ def create_prices_for_all_depots_for_day(
         Q(price__isnull=False)
         ).exclude(product_key__sort='Other products')
     
-    logger.info('petroleums=%s', petroleums)
+    # logger.info('petroleums=%s', petroleums)
     
     rail_tariffs = RailTariff.objects.all().prefetch_related(
         'rail_code_base_to').prefetch_related('rail_code_base_from')
@@ -52,10 +52,13 @@ def create_prices_for_all_depots_for_day(
     #     'rail_tariffs=%s', rail_tariffs)
 
     for depot in depots:
+        # logger.info('depot=%s', depot)
         for production_place in production_places:
-            for petroleum in petroleums.filter(basis=production_place.basis):
-
+            # logger.info('production_place=%s', production_place)
+            for petroleum in petroleums.filter(basis__code=production_place.basis.code):
+                # logger.info('petroleum=%s', petroleum)
                 cargo = get_cargo_code(PetroleumSort[petroleum.product_key.sort])
+                # logger.info('cargo=%s', cargo)
                 if cargo:
                     rail_tariff = rail_tariffs.filter(
                         rail_code_base_to=depot.rzd_code,
@@ -65,13 +68,15 @@ def create_prices_for_all_depots_for_day(
                     if rail_tariff:
                         full_price = calculate_full_price(petroleum, rail_tariff)
                         if full_price:
-                            save_prices_to_db(
+                            prices = save_prices_to_db(
                                 depot=depot,
                                 production_place=production_place,
                                 petroleum=petroleum,
                                 rail_tariff=rail_tariff,
                                 full_price=full_price
                             )
+                            logger.info('prices=%s', prices)
+    
 
 
 AB = [PetroleumSort.AI100, PetroleumSort.AI98, PetroleumSort.AI95, PetroleumSort.AI92]

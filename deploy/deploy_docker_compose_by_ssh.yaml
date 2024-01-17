@@ -1,0 +1,23 @@
+name: Deploy
+on: [push]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: webfactory/ssh-agent@v0.5.4
+        env:
+            COMPOSE_DOCKER_CLI_BUILD: 0
+            DOCKER_HOST: "ssh://deployuser@petroleum-prices.ru"
+        with:
+          ssh-private-key: ${{ secrets.DEPLOYUSER_SSH_PRIVATE_KEY }}
+
+      - name: Disable Host key verification
+        run: echo "StrictHostKeyChecking no" >> ~/.ssh/config
+
+      - name: Pull image
+        run: docker-compose pull
+
+      - name: Run servises
+        run: docker-compose up -d

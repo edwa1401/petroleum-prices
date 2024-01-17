@@ -55,9 +55,13 @@ INSTALLED_APPS = [
     'users',
     'django_celery_results',
     'django_celery_beat',
+    'rest_framework',
+    'drf',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -177,6 +181,17 @@ LOGGING = {
         "handlers": ["console"],
         "level": "DEBUG",
     },
+    "loggers": {
+        "django.db": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+        },
+
+    }, 
+    "django": {
+        "handlers": ["console"],
+        "level": "DEBUG",
+        },
 }
 
 # REDIS CACHE
@@ -190,3 +205,25 @@ CACHES = {
         },
     }
 }
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}
+
+# INTERNAL_IPS = [
+#     # ...
+#     "127.0.0.1",
+#     # ...
+# ]
+
+if DEBUG:
+    import socket
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + ["127.0.0.1", "10.0.2.2"]

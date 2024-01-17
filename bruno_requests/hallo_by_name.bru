@@ -1,0 +1,19 @@
+meta {
+  name: hallo_by_name
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://127.0.0.1:8000/drf/hallobyname/
+  body: json
+  auth: none
+}
+
+query {
+  ~name: Vova
+}
+
+body:json {
+   {"name": "Stepan"}
+}
