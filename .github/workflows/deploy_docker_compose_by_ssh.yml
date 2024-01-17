@@ -1,8 +1,9 @@
 name: Deploy
 
-on:[push]
-  # push:
-  #   tags: [ 'v*.*.*' ]
+on:
+  push:
+    tags:
+      - "v*.*.*"
 jobs:
   deploy:
     runs-on: ubuntu-latest
