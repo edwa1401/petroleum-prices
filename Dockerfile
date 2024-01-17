@@ -22,6 +22,7 @@ COPY prices_analyzer ./prices_analyzer
 COPY rail_tariff ./rail_tariff
 COPY spimex_parser ./spimex_parser
 COPY users ./users
+COPY rest_api ./rest_api
 COPY templates ./templates
 
 

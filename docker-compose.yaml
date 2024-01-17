@@ -7,18 +7,19 @@ services:
   web:
     env_file:
       - .env
-    restart: always
     build: .
     command: sh -c 'python manage.py makemigrations &&
                 python manage.py migrate &&
+                python manage.py collectstatic &&
                 gunicorn petroleum_prices.wsgi:application --bind 0.0.0.0:8000'
+    ports:
+      - 8000:8000
     volumes:
       - static_volume:/static
       - media_volume:/media
     
   postgresdb:
     image: postgres
-    restart: always
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
@@ -31,18 +32,6 @@ services:
       - .env
     build: .
     command: celery -A petroleum_prices worker --beat --scheduler django --loglevel=info
-    
-  nginx:
-    image: nginx
-    volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - static_volume:/static
-      - media_volume:/media
-    ports:
-      - 80:80
-      - 443:443
-    depends_on:
-      - web
 
 volumes:
   static_volume:
