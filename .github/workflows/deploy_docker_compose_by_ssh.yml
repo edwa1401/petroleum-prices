@@ -21,8 +21,8 @@ jobs:
         run: ssh deployuser@petroleum-prices.ru "docker compose pull"
         
       - name: Stop services
-        run: ssh deployuser@petroleum-prices.ru "docker compose stop web worker"
+        run: ssh deployuser@petroleum-prices.ru "docker compose stop web worker nginx"
         
       - name: Run servises
-        run: ssh deployuser@petroleum-prices.ru "docker compose up -d web worker" 
+        run: ssh deployuser@petroleum-prices.ru "docker compose up -d web worker nginx" 
 
