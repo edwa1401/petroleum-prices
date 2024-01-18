@@ -10,7 +10,6 @@ services:
     image: ghcr.io/edwa1401/petroleum-prices:main
     command: sh -c "python manage.py makemigrations &&
                     python manage.py migrate &&
-                    python manage.py collectstatic &&
                     gunicorn petroleum_prices.wsgi:application --bind 0.0.0.0:8000"
     volumes:
       - static_volume:/opt/app/static
