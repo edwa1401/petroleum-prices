@@ -10,6 +10,7 @@ services:
     image: ghcr.io/edwa1401/petroleum-prices:main
     command: sh -c "python manage.py makemigrations &&
                     python manage.py migrate &&
+                    python manage.py collectstatic &&
                     gunicorn petroleum_prices.wsgi:application --bind 0.0.0.0:8000"
     volumes:
       - static_volume:/static
@@ -25,6 +26,8 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 5s
@@ -56,3 +59,4 @@ services:
 volumes:
   static_volume:
   media_volume:
+  postgres-data:
