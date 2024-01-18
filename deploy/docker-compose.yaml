@@ -14,7 +14,7 @@ services:
                     gunicorn petroleum_prices.wsgi:application --bind 0.0.0.0:8000"
     volumes:
       - static_volume:/opt/app/static
-      - media_volume:opt/app/media
+      - media_volume:/opt/app/media
     depends_on:
       postgresdb:
         condition: service_healthy
