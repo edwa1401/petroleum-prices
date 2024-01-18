@@ -25,4 +25,6 @@ COPY users ./users
 COPY rest_api ./rest_api
 COPY templates ./templates
 
+RUN python manage.py collectstatic
+
 CMD ["manage.py", "runserver", "0.0.0.0:8000"]
