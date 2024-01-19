@@ -200,7 +200,7 @@ LOGGING = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": os.environ['REDIS_LOCATION_CASH_URL'],
+        "LOCATION": os.getenv('REDIS_LOCATION_CASH_URL'),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
