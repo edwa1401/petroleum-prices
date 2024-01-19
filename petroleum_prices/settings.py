@@ -30,11 +30,11 @@ SECRET_KEY = os.getenv('SECRET_KEY', default=get_random_secret_key())
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(',')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='localhost').split(',')
 
-CSRF_TRUSTED_ORIGINS = os.environ['CSRF_TRUSTED_ORIGINS'].split(',')
-CSRF_ALLOWED_ORIGINS = os.environ['CSRF_ALLOWED_ORIGINS'].split(',')
-CORS_ORIGINS_WHITELIST = os.environ['CORS_ORIGINS_WHITELIST'].split(',')
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', default='').split(',')
+CSRF_ALLOWED_ORIGINS = os.getenv('CSRF_ALLOWED_ORIGINS', default='').split(',')
+CORS_ORIGINS_WHITELIST = os.getenv('CORS_ORIGINS_WHITELIST', default='').split(',')
 
 AUTH_USER_MODEL = 'users.User'
 
