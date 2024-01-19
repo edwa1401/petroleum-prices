@@ -159,7 +159,7 @@ LOGIN_REDIRECT_URL = '/petroleum_filter/'
 
 # Celery settings
 
-CELERY_BROKER_URL = os.environ['CELERY_BROKER_URL']
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
 
 CELERY_TIMEZONE = 'Europe/Moscow'
 CELERY_TASK_TRACK_STARTED = True
