@@ -26,9 +26,7 @@ jobs:
         run: scp ./deploy/docker-compose.yaml deployuser@petroleum-prices.ru:./
         
       - name: Pull image
-        env:
-          VERSION: ${{ steps.meta.outputs.tags[0] }}
-        run: ssh deployuser@petroleum-prices.ru "VERSION=${VERSION} docker compose pull"
+        run: ssh deployuser@petroleum-prices.ru "VERSION=${DOCKER_METADATA_OUTPUT_VERSION} docker compose pull"
         
       - name: Stop services
         run: ssh deployuser@petroleum-prices.ru "VERSION=$tags docker compose stop web worker nginx"
