@@ -32,5 +32,5 @@ jobs:
         run: ssh deployuser@petroleum-prices.ru "VERSION=${DOCKER_METADATA_OUTPUT_VERSION} docker compose stop web worker nginx"
         
       - name: Run servises
-        run: ssh deployuser@petroleum-prices.ru "VERSION=${DOCKER_METADATA_OUTPUT_VERSION} docker compose up -d web worker"
+        run: ssh deployuser@petroleum-prices.ru "VERSION=${DOCKER_METADATA_OUTPUT_VERSION} docker compose up -d web worker nginx"
 
