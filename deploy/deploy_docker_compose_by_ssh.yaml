@@ -3,7 +3,7 @@ name: Deploy
 
 on:
   push:
-    tags: [ '*.*.*' ]
+    tags: [ 'v*.*.*' ]
 
 jobs:
   deploy:
@@ -27,4 +27,4 @@ jobs:
         run: ssh deployuser@petroleum-prices.ru "docker compose stop web worker"
         
       - name: Run servises
-        run: ssh deployuser@petroleum-prices.ru "docker compose up -d web worker" 
+        run: ssh deployuser@petroleum-prices.ru command VERSION=$tags"docker compose up -d web worker" 
