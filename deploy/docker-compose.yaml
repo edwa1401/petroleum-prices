@@ -7,7 +7,7 @@ services:
     env_file:
       - .env
     restart: unless-stopped
-    image: ghcr.io/edwa1401/petroleum-prices:${TAG}
+    image: ghcr.io/edwa1401/petroleum-prices:${VERSION}
     command: sh -c "python manage.py makemigrations &&
                     python manage.py migrate &&
                     gunicorn petroleum_prices.wsgi:application --bind 0.0.0.0:8000"
@@ -37,7 +37,7 @@ services:
     env_file:
       - .env
     restart: unless-stopped
-    image: ghcr.io/edwa1401/petroleum-prices:${TAG}
+    image: ghcr.io/edwa1401/petroleum-prices:${VERSION}
     command: celery -A petroleum_prices worker --beat --scheduler django --loglevel=info
 
   nginx:
