@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    tags: [ 'v*.*.*' ]
+    tags: [ '*.*.*' ]
 
 jobs:
   deploy:
@@ -20,11 +20,11 @@ jobs:
         run: scp ./deploy/docker-compose.yaml deployuser@petroleum-prices.ru:./
         
       - name: Pull image
-        run: ssh deployuser@petroleum-prices.ru "docker compose pull"
+        run: ssh deployuser@petroleum-prices.ru "VERSION=$tags docker compose pull"
         
       - name: Stop services
-        run: ssh deployuser@petroleum-prices.ru "docker compose stop web worker nginx"
+        run: ssh deployuser@petroleum-prices.ru "VERSION=$tags docker compose stop web worker nginx"
         
       - name: Run servises
-        run: ssh deployuser@petroleum-prices.ru command VERSION=$tags docker compose up -d web worker
+        run: ssh deployuser@petroleum-prices.ru "VERSION=$tags docker compose up -d web worker"
 
