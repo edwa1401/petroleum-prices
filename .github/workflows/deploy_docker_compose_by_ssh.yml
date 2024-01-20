@@ -16,11 +16,19 @@ jobs:
       - name: Disable Host key verification
         run: echo "StrictHostKeyChecking no" >> ~/.ssh/config
 
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
       - name: Copy docker-compose.yaml with tags
         run: scp ./deploy/docker-compose.yaml deployuser@petroleum-prices.ru:./
         
       - name: Pull image
-        run: ssh deployuser@petroleum-prices.ru "VERSION=$tags docker compose pull"
+        env:
+          VERSION: ${{ steps.meta.outputs.tags }}
+        run: ssh deployuser@petroleum-prices.ru "VERSION=${VERSION} docker compose pull"
         
       - name: Stop services
         run: ssh deployuser@petroleum-prices.ru "VERSION=$tags docker compose stop web worker nginx"
