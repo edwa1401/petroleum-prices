@@ -27,7 +27,7 @@ jobs:
         
       - name: Pull image
         env:
-          VERSION: ${{ steps.meta.outputs.tags }}
+          VERSION: ${{ steps.meta.outputs.tags[0] }}
         run: ssh deployuser@petroleum-prices.ru "VERSION=${VERSION} docker compose pull"
         
       - name: Stop services
