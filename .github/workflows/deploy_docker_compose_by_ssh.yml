@@ -2,9 +2,12 @@ name: Deploy
 
 on:
   push:
+    branches: [ "main" ]
     tags: [ '*.*.*' ]
 
 jobs:
+  call-workflow:
+    uses: ./.github/workflows/docker-publish.yml
   deploy:
     runs-on: ubuntu-latest
     steps:
