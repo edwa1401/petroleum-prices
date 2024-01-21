@@ -6,7 +6,11 @@ on:
     tags: [ '*.*.*' ]
 
 jobs:
-  call-workflow:
+  call-workflow-passing-data:
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
     uses: ./.github/workflows/docker-publish.yml
   deploy:
     runs-on: ubuntu-latest
