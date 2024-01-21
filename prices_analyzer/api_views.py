@@ -5,7 +5,7 @@ from typing import Any
 from django.db.models import Q
 from django.http import HttpRequest, JsonResponse
 from django_stubs_ext import QuerySetAny
-from rest_framework import filters, generics
+from rest_framework import generics
 
 from prices_analyzer.models import Depot, Prices
 from prices_analyzer.serializers import PricesSerializer

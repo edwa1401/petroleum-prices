@@ -1,4 +1,3 @@
-from prices_analyzer.models import Prices
 from rest_framework import serializers
 
 

@@ -6,6 +6,7 @@ name: Docker
 # documentation.
 
 on:
+  workflow_call:
   schedule:
     - cron: '20 18 * * *'
   push:
@@ -23,8 +24,9 @@ env:
 
 
 jobs:
+  call-workflow:
+    uses: ./.github/workflows/CI.yml
   build:
-
     runs-on: ubuntu-latest
     permissions:
       contents: read
