@@ -33,7 +33,7 @@ jobs:
         env: 
           PDM_USE_VENV: 0
         run: |
-          pdm install mypy .
+          pdm install mypy
 
       - name: Run mypy
         run: |
