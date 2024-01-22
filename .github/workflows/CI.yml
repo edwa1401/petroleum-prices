@@ -31,7 +31,7 @@ jobs:
 
       - name: Install mypy
         run: |
-          pdm install mypy
+          pdm install && mypy .
 
       - name: Run mypy
         run: |
