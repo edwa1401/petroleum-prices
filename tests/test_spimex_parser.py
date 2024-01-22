@@ -189,9 +189,10 @@ def test__convert_contract__fail_return_assertion_error_for_different_result_in_
         assert parser.convert_contract(contract=contract) == expected
 
 
-def test__get_spimex_sheet_for_day__open_first_sheet_from_excel(xlrd_open_workbook_mock):
-
-
+def test__get_spimex_sheet_for_day__open_first_sheet_from_excel(
+        xlrd_open_workbook_mock, download_file_mock
+        ):
+    download_file_mock
     parser.get_spimex_sheet_for_day(datetime.datetime(2023, 12, 8))
     xlrd_open_workbook_mock.return_value.sheet_by_index.assert_called_once_with(0)
 
