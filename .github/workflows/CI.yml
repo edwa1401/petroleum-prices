@@ -22,8 +22,8 @@ jobs:
         uses: pdm-project/setup-pdm@v3
 
       - name: Install dependencies
-        env: 
-          PDM_USE_VENV: 0
+        # env: 
+        #   PDM_USE_VENV: 0
         run: pdm install
 
       - name: Run ruff
@@ -31,10 +31,11 @@ jobs:
 
       - name: Install mypy
         run: |
-          pdm sync -d && mypy .
+          pdm install && mypy .
+
       - name: Run mypy
         run: |
-          pdm run -v mypy
+          pdm run -v mypy .
 
       - name: Install pytest
         run: |
