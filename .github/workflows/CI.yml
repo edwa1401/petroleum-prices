@@ -20,11 +20,11 @@ jobs:
 
       - name: Setup PDM
         uses: pdm-project/setup-pdm@v3
-        env: 
-          PDM_USE_VENV: 0
 
       - name: Install dependencies
         run: pdm install
+        env: 
+          PDM_USE_VENV: 0
 
       - name: Run ruff
         uses: chartboost/ruff-action@v1
