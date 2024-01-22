@@ -30,6 +30,8 @@ jobs:
         uses: chartboost/ruff-action@v1
 
       - name: Install mypy
+        env: 
+          PDM_USE_VENV: 0
         run: |
           pdm install && mypy .
 
@@ -38,6 +40,8 @@ jobs:
           pdm run -v mypy .
 
       - name: Install pytest
+        env: 
+          PDM_USE_VENV: 0
         run: |
           pdm sync -d && pytest pytest-django pytest-cov
 
