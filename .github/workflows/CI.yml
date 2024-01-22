@@ -29,8 +29,17 @@ jobs:
       - name: Run ruff
         uses: chartboost/ruff-action@v1
 
+      - name: Install mypy
+        run: |
+          pdm sync -d && mypy .
       - name: Run mypy
-        run: mypy .
+        run: |
+          pdm run -v mypy
+
+      - name: Install pytest
+        run: |
+          pdm sync -d && pytest pytest-django pytest-cov
 
       - name: Run tests
-        run: pytest --cov --lf -vv .
+        run: |
+          pdm pytest --cov --lf -vv .
