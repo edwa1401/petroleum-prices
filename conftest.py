@@ -340,12 +340,6 @@ def xlrd_open_workbook_mock():
 
 
 @pytest.fixture
-def xlrd_open_workbook_mock():
-    with patch('xlrd.open_workbook') as mock:
-        yield mock
-
-
-@pytest.fixture
 def download_file_mock():
     with patch('spimex_parser.parser.download_file') as mock:
         yield mock
