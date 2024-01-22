@@ -20,9 +20,8 @@ jobs:
 
       - name: Setup PDM
         uses: pdm-project/setup-pdm@v3
-
-      - name: Disable virtiaulenv mode
-        run: pdm config python.use_venv false
+        with: 
+          ${{ env.PDM_USE_VENV }}=0
 
       - name: Install dependencies
         run: pdm install
