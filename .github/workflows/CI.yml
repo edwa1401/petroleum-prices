@@ -21,7 +21,7 @@ jobs:
       - name: Setup PDM
         uses: pdm-project/setup-pdm@v3
         with: 
-          ${{ env.PDM_USE_VENV }}=0
+          ${{ env.PDM_USE_VENV }}
 
       - name: Install dependencies
         run: pdm install
