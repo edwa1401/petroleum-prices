@@ -1,32 +1,23 @@
 name: Docker
 
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
 on:
   workflow_call:
-  schedule:
-    - cron: '20 18 * * *'
   push:
     branches: [ "main" ]
-    # Publish semver tags as releases.
     tags: [ '*.*.*' ]
   pull_request:
     branches: [ "main" ]
 
 env:
-  # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
-  # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
 
 
 jobs:
-  call-workflow:
+  check:
     uses: ./.github/workflows/CI.yml
   build:
+    needs: [check]
     runs-on: ubuntu-latest
     permissions:
       contents: read
