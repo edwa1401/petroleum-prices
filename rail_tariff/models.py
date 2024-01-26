@@ -3,7 +3,7 @@ from django_extensions.db.models import TimeStampedModel
 from django.urls import reverse
 
 
-class RzdCode(TimeStampedModel, models.Model):
+class RzdStation(TimeStampedModel, models.Model):
     code = models.IntegerField(unique=True)
     station_name = models.CharField(max_length=1000, blank=True)
 
@@ -17,12 +17,12 @@ class RzdCode(TimeStampedModel, models.Model):
 class RailTariff(TimeStampedModel, models.Model):
 
     rail_code_base_to = models.ForeignKey(
-        RzdCode, 
+        RzdStation, 
         on_delete=models.PROTECT,
         related_name='rail_codes_base_to'
         )
     rail_code_base_from = models.ForeignKey(
-        RzdCode,
+        RzdStation,
         on_delete=models.PROTECT,
         related_name='rail_codes_base_from'
         )

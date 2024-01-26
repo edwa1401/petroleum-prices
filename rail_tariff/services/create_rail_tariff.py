@@ -3,7 +3,7 @@ import backoff
 from django.shortcuts import get_object_or_404
 import requests
 from prices_analyzer.models import Depot, ProductionPlace
-from rail_tariff.models import RailTariff, RzdCode
+from rail_tariff.models import RailTariff, RzdStation
 from rail_tariff.shemas import Fuel, RailTariffClient
 from rail_tariff import shemas
 import time
@@ -35,8 +35,8 @@ def save_rail_tariff_to_db(
         tariff: shemas.RailTariff) -> bool:
 
     try:
-        rail_code_base_to = get_object_or_404(RzdCode, code=station_to)
-        rail_code_base_from = get_object_or_404(RzdCode, code=station_from)
+        rail_code_base_to = get_object_or_404(RzdStation, code=station_to)
+        rail_code_base_from = get_object_or_404(RzdStation, code=station_from)
 
         rail_data, create = RailTariff.objects.get_or_create(
             rail_code_base_to=rail_code_base_to,
@@ -84,8 +84,8 @@ def get_cargo_ves_for_fuel(fuel: Fuel) -> tuple[str, str]:
 
 def check_rail_tarif_exists(station_to: str, station_from: str, cargo: str) -> bool:
 
-    rail_code_base_to = get_object_or_404(RzdCode, code=station_to)
-    rail_code_base_from = get_object_or_404(RzdCode, code=station_from)
+    rail_code_base_to = get_object_or_404(RzdStation, code=station_to)
+    rail_code_base_from = get_object_or_404(RzdStation, code=station_from)
 
     rail_tariffs = RailTariff.objects.filter(
         rail_code_base_to=rail_code_base_to,

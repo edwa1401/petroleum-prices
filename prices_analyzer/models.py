@@ -2,7 +2,7 @@ import decimal
 from django.db import models
 from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
-from rail_tariff.models import RailTariff, RzdCode
+from rail_tariff.models import RailTariff, RzdStation
 
 from typing import Any
 from users.models import User
@@ -33,7 +33,7 @@ class Basis(TimeStampedModel, models.Model):
     
 class ProductionPlace(TimeStampedModel, models.Model):
     basis = models.OneToOneField(Basis, on_delete=models.PROTECT)
-    rzd_code = models.ForeignKey(RzdCode, on_delete=models.PROTECT)
+    rzd_code = models.ForeignKey(RzdStation, on_delete=models.PROTECT)
     name = models.CharField(max_length=1000, blank=False)
     def __str__(self) -> str:
         return f' Basis code: {self.basis.code}, basis name: {self.basis.name}, \
@@ -43,7 +43,7 @@ class ProductionPlace(TimeStampedModel, models.Model):
 class Depot(TimeStampedModel, models.Model):
     name = models.CharField(max_length=1000)
     user = models.ManyToManyField(User, related_name='depots')
-    rzd_code = models.ForeignKey(RzdCode, on_delete=models.PROTECT)
+    rzd_code = models.ForeignKey(RzdStation, on_delete=models.PROTECT)
 
     def get_absolute_url(self) -> str:
         return reverse('prices_analyzer:depot:list')

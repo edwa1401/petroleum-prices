@@ -1,10 +1,16 @@
-# from rest_framework import serializers
-# from rest_api.models import Hallo
+from rest_framework import serializers
+from rest_api.models import PetroleumMap, PetroleumCode
 
 
-
-# class HalloSerializer(serializers.ModelSerializer):
+# class PetroleumMapSerializer(serializers.ModelSerializer):
+#     petroleum_codes_
 #     class Meta:
-#         model = Hallo
-#         fields = ['name', 'msg']
+#         model = PetroleumMap
+#         fields = ['sort']
         
+class PetroleumCodeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PetroleumCode
+        fields = ['sort', 'petroleum_code']
+
