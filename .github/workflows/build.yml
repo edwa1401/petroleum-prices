@@ -1,4 +1,4 @@
-name: Docker
+name: Build
 
 on:
   workflow_call:
@@ -14,15 +14,13 @@ env:
 
 jobs:
   check:
-    uses: ./.github/workflows/CI.yml
+    uses: ./.github/workflows/check.yml
   build:
     needs: [check]
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-      # This is used to complete the identity challenge
-      # with sigstore/fulcio when running outside of PRs.
       id-token: write
 
     steps:
