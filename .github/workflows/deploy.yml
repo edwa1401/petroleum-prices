@@ -5,13 +5,14 @@ on:
     tags: [ '*.*.*' ]
 
 jobs:
-  call-workflow-passing-data:
+  build:
     permissions:
       contents: read
       packages: write
       id-token: write
-    uses: ./.github/workflows/docker-publish.yml
+    uses: ./.github/workflows/build.yml
   deploy:
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

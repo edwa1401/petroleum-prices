@@ -69,9 +69,13 @@ ignore_missing_imports = true
 
 
 [[tool.mypy.overrides]]
-module = "celery.*"
+module = "django_typer.*"
 ignore_missing_imports = true
 
+
+[[tool.mypy.overrides]]
+module = "celery.*"
+ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = "conftest.py"
