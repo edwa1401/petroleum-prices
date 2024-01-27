@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from rail_tariff.models import RzdCode, RailTariff
+from rail_tariff.models import RzdStation, RailTariff
 
-admin.site.register(RzdCode)
+admin.site.register(RzdStation)
 admin.site.register(RailTariff)

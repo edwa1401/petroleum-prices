@@ -2,24 +2,24 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 
-from rail_tariff.models import RzdCode  # noqa: F401
+from rail_tariff.models import RzdStation  # noqa: F401
 from rail_tariff.services.create_rail_tariff import (
     get_rail_tariff_from_spimex,
     get_tariffs_for_all_depots,
 )
 
 class RzdCodeDetailView(DetailView):
-    model = RzdCode
+    model = RzdStation
     template_name = 'rail_tariff/rzdcode_detail.html'
 
 
 class CreateRzdCodeView(CreateView):
-    model = RzdCode
+    model = RzdStation
     fields = ['code', 'station_name']
 
 
 class UpdateRzdCodeView(UpdateView):
-    model = RzdCode
+    model = RzdStation
     fields = ['code', 'station_name']
     template_name_suffix = '_update_form'
 

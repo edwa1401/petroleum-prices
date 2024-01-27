@@ -1,6 +1,8 @@
+include .env
+export
+
 style: 
 	ruff .
-
 types:
 	mypy .
 
@@ -9,3 +11,4 @@ tests:
 
 check:
 	make style types tests
+
