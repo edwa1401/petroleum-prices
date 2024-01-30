@@ -1,25 +1,6 @@
 from rest_framework import serializers
 
 
-# class PricesSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Prices
-
-#         fields = ['depot', 'production_place', 'rail_tariff', 'petroleum', 'full_price']
-
-#         # fields = [
-#         #     'petroleum__day',
-#         #     'depot__name',
-#         #     'production_place__name',
-#         #     'petroleum__product_key__sort',
-#         #     'petroleum__metric',
-#         #     'petroleum__volume',
-#         #     'petroleum__price',
-#         #     'rail_tariff__tarif',
-#         #     'full_price',
-#         #     'rail_tariff__distance'
-#         #     ]
-
 class PricesSerializer(serializers.Serializer):
         day = serializers.DateField(source='petroleum.day')
         depot = serializers.CharField(source='depot.name', max_length=1000)
@@ -43,15 +24,4 @@ class PricesSerializer(serializers.Serializer):
         distance_from_production_to_depot = serializers.CharField(
                 source='rail_tariff.distance', max_length=1000)
 
-        # fields = [
-        #     'petroleum__day',
-        #     'depot__name',
-        #     'production_place__name',
-        #     'petroleum__product_key__sort',
-        #     'petroleum__metric',
-        #     'petroleum__volume',
-        #     'petroleum__price',
-        #     'rail_tariff__tarif',
-        #     'full_price',
-        #     'rail_tariff__distance'
-        #     ]
+

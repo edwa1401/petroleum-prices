@@ -1,0 +1,21 @@
+meta {
+  name: create_depot
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://127.0.0.1:8000/rest_api/depot/
+  body: json
+  auth: basic
+}
+
+auth:basic {
+  username: user1
+  password: D"_;)YYvx?_+v8xcmzi.`:G-tLrCrc#8j2`vx(A"<`-B~-W!Q
+}
+
+body:json {
+   {"name": "Калужская н/б",
+   "rzd_code": "40"}
+}
