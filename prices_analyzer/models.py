@@ -40,9 +40,18 @@ class ProductionPlace(TimeStampedModel, models.Model):
             rzd code: {self.rzd_code.code}, production place name: {self.name}'    
 
 
+class UserProductionPlaces(TimeStampedModel, models.Model):
+    user_id = models.ForeignKey(User, on_delete=models.PROTECT)
+    production_place_id = models.ManyToManyField(ProductionPlace, related_name='users_prod_places')
+    title = models.CharField(max_length=1000, blank=True)
+    def __str__(self) -> str:
+        return f' user id: {self.user_id}, production place id {self.production_place_id}, \
+            title: {self.title}'
+
+
 class Depot(TimeStampedModel, models.Model):
     name = models.CharField(max_length=1000)
-    user = models.ManyToManyField(User, related_name='depots')
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
     rzd_code = models.ForeignKey(RzdStation, on_delete=models.PROTECT)
 
     def get_absolute_url(self) -> str:
@@ -51,7 +60,7 @@ class Depot(TimeStampedModel, models.Model):
     def __str__(self) -> str:
         return f' Petroleum depot: {self.name}'
     
-
+    
 class Petroleum(TimeStampedModel, models.Model):
 
     class Meta:

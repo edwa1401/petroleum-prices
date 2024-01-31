@@ -1,10 +1,9 @@
 import datetime
 import logging
-from typing import Any
 
 from django.db.models import Q
 from django.http import HttpRequest, JsonResponse
-from django_stubs_ext import QuerySetAny
+from django.db.models.query import QuerySet
 from rest_framework import generics
 
 from prices_analyzer.models import Depot, Prices
@@ -51,13 +50,10 @@ def get_prices_for_period_view(request: HttpRequest) -> JsonResponse:
 class PricesListView(generics.ListAPIView):
 
     serializer_class = PricesSerializer
-    # filter_backends = [filters.SearchFilter]
-    # search_fields = ['petroleum__day', 'petroleum__product_key__sort']
 
-    def get_queryset(self) -> QuerySetAny[Any, Any]:
+    def get_queryset(self) -> QuerySet[Prices]:
         prices = Prices.objects.all().prefetch_related('depot').prefetch_related(
             'petroleum').prefetch_related('production_place').prefetch_related('rail_tariff')
-        # logger.debug('prices=%s', prices)
 
         raw_start_day = self.request.query_params.get('start_day')
         raw_end_day = self.request.query_params.get('end_day')
