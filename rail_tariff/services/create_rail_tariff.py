@@ -55,9 +55,9 @@ def get_prod_places_codes() -> list[str]:
     prod_places = ProductionPlace.objects.all().select_related('rzd_code')
     prod_places_codes = []
     for prod_place in prod_places:
-        if str(prod_place.rzd_code.code) not in prod_places_codes and \
-        str(prod_place.rzd_code.code) != '0':
-            prod_places_codes.append(str(prod_place.rzd_code.code))
+        if prod_place.rzd_code.code not in prod_places_codes and \
+        prod_place.rzd_code.code != '0':
+            prod_places_codes.append(prod_place.rzd_code.code)
 
     return prod_places_codes
 

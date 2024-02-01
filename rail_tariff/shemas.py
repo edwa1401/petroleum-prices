@@ -18,8 +18,8 @@ class Fuel(enum.Enum):
 
 @dataclass
 class RailTariffSchema:
-    rail_code_base_to: int
-    rail_code_base_from: int
+    rail_code_base_to: str
+    rail_code_base_from: str
     weight: int
     cargo: int
     distance: int

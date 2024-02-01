@@ -1,0 +1,30 @@
+meta {
+  name: create_user_prod_place
+  type: http
+  seq: 9
+}
+
+post {
+  url: http://127.0.0.1:8000/rest_api/user_prod_places/
+  body: json
+  auth: basic
+}
+
+auth:basic {
+  username: user1
+  password: D"_;)YYvx?_+v8xcmzi.`:G-tLrCrc#8j2`vx(A"<`-B~-W!Q
+}
+
+body:json {
+  {
+              "depot": 30,
+              "production_place": [
+                  15,
+                  13,
+                  10,
+                  18,
+                  19
+              ],
+              "title": "Прод площадки ЦФО"
+          }
+}

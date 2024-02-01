@@ -4,7 +4,7 @@ from django.urls import reverse
 
 
 class RzdStation(TimeStampedModel, models.Model):
-    code = models.IntegerField(unique=True)
+    code = models.CharField(max_length=20, unique=True)
     station_name = models.CharField(max_length=1000, blank=True)
 
     def get_absolute_url(self) -> str:

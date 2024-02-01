@@ -5,7 +5,7 @@
 groups = ["default", "test", "linter", "dev", "pytest-cov"]
 strategy = ["cross_platform"]
 lock_version = "4.4.1"
-content_hash = "sha256:3008f3ef9646a1428ea2d3e59c7c6aaf1d382f9e6d927d9b44f63a63bb7fbe37"
+content_hash = "sha256:44b1783e5e6f5338ed458dd107e03b839ef8776238f5bb4a3e03b6ad548fc433"
 
 [[package]]
 name = "amqp"
@@ -317,6 +317,20 @@ files = [
 ]
 
 [[package]]
+name = "crispy-bootstrap4"
+version = "2023.1"
+requires_python = ">=3.8"
+summary = "Bootstrap4 template pack for django-crispy-forms"
+dependencies = [
+    "django-crispy-forms>=2.0",
+    "django>=4.2",
+]
+files = [
+    {file = "crispy-bootstrap4-2023.1.tar.gz", hash = "sha256:d60e93eb6d82886c009eb174f2a4c78fdac602a1efadf0305471c84815bd973a"},
+    {file = "crispy_bootstrap4-2023.1-py3-none-any.whl", hash = "sha256:1a88e74f8d36d2dedeb40a66f246994f3ce5cd855017785d0291e741d3e7d7c2"},
+]
+
+[[package]]
 name = "cron-descriptor"
 version = "1.4.0"
 summary = "A Python library that converts cron expressions into human readable strings."
@@ -377,6 +391,19 @@ dependencies = [
 files = [
     {file = "django_celery_results-2.5.1-py3-none-any.whl", hash = "sha256:0da4cd5ecc049333e4524a23fcfc3460dfae91aa0a60f1fae4b6b2889c254e01"},
     {file = "django_celery_results-2.5.1.tar.gz", hash = "sha256:3ecb7147f773f34d0381bac6246337ce4cf88a2ea7b82774ed48e518b67bb8fd"},
+]
+
+[[package]]
+name = "django-crispy-forms"
+version = "2.1"
+requires_python = ">=3.8"
+summary = "Best way to have Django DRY forms"
+dependencies = [
+    "django>=4.2",
+]
+files = [
+    {file = "django-crispy-forms-2.1.tar.gz", hash = "sha256:4d7ec431933ad4d4b5c5a6de4a584d24613c347db9ac168723c9aaf63af4bb96"},
+    {file = "django_crispy_forms-2.1-py3-none-any.whl", hash = "sha256:d592044771412ae1bd539cc377203aa61d4eebe77fcbc07fbc8f12d3746d4f6b"},
 ]
 
 [[package]]

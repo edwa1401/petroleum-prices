@@ -26,7 +26,6 @@ urlpatterns = [
     path('rail/', include('rail_tariff.urls', namespace='rail_tariff')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('parser/', include('spimex_parser.urls')),
-    path('users/', include('users.urls')),
     path('rest_api/', include('rest_api.urls')),
     path("__debug__/", include("debug_toolbar.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
