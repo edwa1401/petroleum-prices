@@ -40,15 +40,6 @@ class ProductionPlace(TimeStampedModel, models.Model):
             rzd code: {self.rzd_code.code}, production place name: {self.name}'    
 
 
-class UserProductionPlaces(TimeStampedModel, models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.PROTECT)
-    production_place_id = models.ManyToManyField(ProductionPlace, related_name='users_prod_places')
-    title = models.CharField(max_length=1000, blank=True)
-    def __str__(self) -> str:
-        return f' user id: {self.user_id}, production place id {self.production_place_id}, \
-            title: {self.title}'
-
-
 class Depot(TimeStampedModel, models.Model):
     name = models.CharField(max_length=1000)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
@@ -59,6 +50,15 @@ class Depot(TimeStampedModel, models.Model):
 
     def __str__(self) -> str:
         return f' Petroleum depot: {self.name}'
+
+
+class UserRouts(TimeStampedModel, models.Model):
+    depot = models.ForeignKey(Depot, on_delete=models.PROTECT)
+    production_place = models.ManyToManyField(ProductionPlace)
+    title = models.CharField(max_length=1000, blank=True)
+    def __str__(self) -> str:
+        return f' Depot: {self.depot}, production place {self.production_place}, \
+            title: {self.title}'
     
     
 class Petroleum(TimeStampedModel, models.Model):
@@ -103,6 +103,9 @@ class Prices(TimeStampedModel, models.Model):
     rail_tariff = models.ForeignKey(RailTariff, on_delete=models.PROTECT, related_name='prices')
     petroleum = models.ForeignKey(Petroleum, on_delete=models.PROTECT, related_name='prices')
     full_price = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True)
+
+    class Meta:
+        ordering = ["full_price",]
     
     def to_json(self) -> dict[str, Any]:
         return {
@@ -114,9 +117,6 @@ class Prices(TimeStampedModel, models.Model):
                 'petroleum_price': self.petroleum.price,
                 'full_price': self.full_price
         }
-    
-    def get_prices(self) -> None:
-        pass
 
     def __str__(self) -> str:
         return f' Depot: {self.depot.name}, from {self.production_place.name}, \

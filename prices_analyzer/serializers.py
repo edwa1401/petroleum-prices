@@ -11,6 +11,8 @@ class PricesSerializer(serializers.Serializer):
                 source='petroleum.product_key.sort', max_length=1000
                 )
         metric = serializers.CharField(source='petroleum.metric', max_length=1000)
+        distance_from_production_to_depot = serializers.CharField(
+                source='rail_tariff.distance', max_length=1000)
         volume = serializers.DecimalField(
               source='petroleum.volume', max_digits=20, decimal_places=3
               )
@@ -21,7 +23,6 @@ class PricesSerializer(serializers.Serializer):
               source='rail_tariff.tarif', max_digits=20, decimal_places=2
               )
         full_price = serializers.DecimalField(max_digits=20, decimal_places=2)
-        distance_from_production_to_depot = serializers.CharField(
-                source='rail_tariff.distance', max_length=1000)
+
 
 
