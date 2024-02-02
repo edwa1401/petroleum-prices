@@ -36,6 +36,7 @@ dependencies = [
     "django-typer>=0.4.0b0",
     "django-crispy-forms>=2.1",
     "crispy-bootstrap4>=2023.1",
+    "drf-yasg>=1.21.7",
 ]
 requires-python = ">=3.11"
 readme = "README.md"
@@ -71,6 +72,11 @@ ignore_missing_imports = true
 
 
 [[tool.mypy.overrides]]
+module = "drf_yasg.*"
+ignore_missing_imports = true
+
+
+[[tool.mypy.overrides]]
 module = "xlrd.*"
 ignore_missing_imports = true
 
@@ -99,7 +105,7 @@ django_settings_module = 'petroleum_prices.settings'
 
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "petroleum_prices.settings"
+DJANGO_SETTINGS_MODULE = "tests.settings"
 python_files = ["test_*.py", "*_test.py", "testing/python/*.py", "test*.py"]
 addopts = [
     '--force-testdox',

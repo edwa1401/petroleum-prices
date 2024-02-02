@@ -8,7 +8,7 @@ class RzdStation(TimeStampedModel, models.Model):
     station_name = models.CharField(max_length=1000, blank=True)
 
     def get_absolute_url(self) -> str:
-        return reverse('rail_tariff:rzdcode:detail', kwargs={'pk': self.pk})
+        return reverse('rail_tariff:rzdstation:detail', kwargs={'pk': self.pk})
 
     def __str__(self) -> str:
         return f' Code {self.code}, station_name {self.station_name}'
