@@ -24,6 +24,7 @@ COPY spimex_parser ./spimex_parser
 COPY users ./users
 COPY rest_api ./rest_api
 COPY templates ./templates
+COPY static ./static
 
 RUN python manage.py collectstatic --noinput
 
