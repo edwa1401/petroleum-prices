@@ -8,6 +8,7 @@ router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'groups', GroupViewSet)
 router.register(r'rzd_stations', views.RzdStationViewSet)
+router.register(r'petroleums', views.PetroleumViewSet, basename='petroleums')
 router.register(r'prices', views.PricesViewSet, basename='prices')
 
 urlpatterns = [

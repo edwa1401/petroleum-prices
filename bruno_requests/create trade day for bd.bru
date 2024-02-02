@@ -1,0 +1,15 @@
+meta {
+  name: create trade day for bd
+  type: http
+  seq: 10
+}
+
+get {
+  url: https://petroleum-prices.ru/parser/?day=2024-01-29
+  body: none
+  auth: none
+}
+
+query {
+  day: 2024-01-29
+}

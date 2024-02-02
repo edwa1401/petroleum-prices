@@ -1,3 +1,4 @@
+version: "2.4"
 services:
   redis:
     image: "redis"
@@ -10,9 +11,10 @@ services:
     image: ghcr.io/edwa1401/petroleum-prices:${VERSION}
     command: sh -c "python manage.py makemigrations &&
                     python manage.py migrate &&
+                    python manage.py collectstatic --no-input &&
                     gunicorn petroleum_prices.wsgi:application --bind 0.0.0.0:8000"
     volumes:
-      - static_volume:/app/static
+      - static_volume:/app/staticfiles
       - media_volume:/app/media
     depends_on:
       postgresdb:
@@ -44,7 +46,7 @@ services:
     image: nginx
     restart: unless-stopped
     volumes:
-      - static_volume:/app/static
+      - static_volume:/app/staticfiles
       - media_volume:/app/media
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro

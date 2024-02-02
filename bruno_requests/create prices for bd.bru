@@ -1,0 +1,15 @@
+meta {
+  name: create prices for bd
+  type: http
+  seq: 11
+}
+
+get {
+  url: https://petroleum-prices.ru/analyzer/prices/create/?day=2024-01-29
+  body: none
+  auth: none
+}
+
+query {
+  day: 2024-01-29
+}

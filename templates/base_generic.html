@@ -4,6 +4,9 @@
     {% block title %}
     <meta charset="UTF-8">
     <title>Petroleum prices based on SPIMEX trades</title>
+    <!-- Add additional CSS in static file -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles.css' %}" />
     {% endblock %}
 </head>
 <body>
