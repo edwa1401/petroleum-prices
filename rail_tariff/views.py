@@ -1,8 +1,9 @@
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-from rail_tariff.models import RzdStation  # noqa: F401
+from rail_tariff.models import RzdStation
 from rail_tariff.services.create_rail_tariff import (
     get_rail_tariff_from_spimex,
     get_tariffs_for_all_depots,
@@ -10,15 +11,15 @@ from rail_tariff.services.create_rail_tariff import (
 
 class RzdCodeDetailView(DetailView):
     model = RzdStation
-    template_name = 'rail_tariff/rzdcode_detail.html'
+    template_name = 'rail_tariff/rzdstation_detail.html'
 
 
-class CreateRzdCodeView(CreateView):
+class CreateRzdCodeView(LoginRequiredMixin, CreateView):
     model = RzdStation
     fields = ['code', 'station_name']
 
 
-class UpdateRzdCodeView(UpdateView):
+class UpdateRzdCodeView(LoginRequiredMixin, UpdateView):
     model = RzdStation
     fields = ['code', 'station_name']
     template_name_suffix = '_update_form'

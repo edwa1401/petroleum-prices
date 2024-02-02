@@ -9,6 +9,7 @@ import requests
 from faker import Faker
 
 from prices_analyzer.shemas import ProductKeySchema, ProductSchema
+from rail_tariff.models import RzdStation
 from spimex_parser.shemas import ContractSchema, SectionSchema, TradeDaySchema
 
 @pytest.fixture
@@ -343,3 +344,15 @@ def xlrd_open_workbook_mock():
 def download_file_mock():
     with patch('spimex_parser.parser.download_file') as mock:
         yield mock
+
+@pytest.mark.django_db
+@pytest.fixture
+def create_rzd_station() -> RzdStation:
+    def inner(
+            code: str | None = None,
+            station_name: str | None = None):
+        code = code or '12345'
+        station_name = station_name or 'Station'
+        return RzdStation.objects.create(code=code, station_name=station_name)
+    return inner
+

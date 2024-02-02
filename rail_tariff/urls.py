@@ -2,13 +2,14 @@ from django.urls import include, path
 from rail_tariff import views
 
 app_name = 'rail_tariff'
-rzdcode_patterns = (
+
+rzdstation_patterns = (
     [
     path('create/', views.CreateRzdCodeView.as_view()),
-    path('<int:pk>/update/', views.UpdateRzdCodeView.as_view(), name='rzdcode-update'),
+    path('<int:pk>/update/', views.UpdateRzdCodeView.as_view(), name='rzdstation-update'),
     path('<int:pk>/', views.RzdCodeDetailView.as_view(), name='detail')
 ],
-'rzdcode'
+'rzdstation'
 )
 
 tarif_patterns = (
@@ -21,6 +22,6 @@ tarif_patterns = (
 
 urlpatterns = [
     path('tarif/', include(tarif_patterns)),
-    path('rzdcode/', include(rzdcode_patterns)),
+    path('rzdstation/', include(rzdstation_patterns)),
 ]
 
