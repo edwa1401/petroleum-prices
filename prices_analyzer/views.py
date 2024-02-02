@@ -5,11 +5,11 @@ from prices_analyzer.filters import PetroleumFilter
 from prices_analyzer.services.create_prices import create_prices_for_all_depots_for_day
 from prices_analyzer.services.create_prod_places import create_prod_places
 from prices_analyzer.models import Depot, Petroleum, Prices
-from django_filters.views import FilterView # type: ignore[import]
+from django_filters.views import FilterView
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import ListView
 from users.models import User
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 def users(request: HttpRequest) -> HttpResponse:
     users = User.objects.all()
@@ -54,7 +54,7 @@ class DepotListView(ListView):
     model = Depot
 
 
-class PricesListView(ListView):
+class PricesListView(LoginRequiredMixin, ListView):
     model = Prices
 
 

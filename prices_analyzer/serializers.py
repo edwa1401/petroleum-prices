@@ -25,4 +25,11 @@ class PricesSerializer(serializers.Serializer):
         full_price = serializers.DecimalField(max_digits=20, decimal_places=2)
 
 
+class PetroleumSerializer(serializers.Serializer):
+        day = serializers.DateField()
+        sort = serializers.CharField(source='product_key.sort', max_length=1000)
+        basis_name = serializers.CharField(source='basis.name')
+        metric = serializers.CharField(max_length=20)
+        volume = serializers.DecimalField(max_digits=20, decimal_places=3)
+        price = serializers.DecimalField(max_digits=20, decimal_places=2)
 

@@ -5,10 +5,10 @@ from django.db.models import Q
 from django.db.models.query import QuerySet
 from rest_framework import generics, permissions, viewsets
 
-from prices_analyzer.models import Depot, Prices, ProductionPlace, UserRouts
-from prices_analyzer.serializers import PricesSerializer
+from prices_analyzer.models import Depot, Petroleum, Prices, ProductionPlace, UserRouts
+from prices_analyzer.serializers import PricesSerializer, PetroleumSerializer
 from rail_tariff.models import RzdStation
-from rest_api.filters import PetroleumsFilter
+from rest_api.filters import PricesFilter, PetroleumFilter
 from rest_api.models import DensityMap, PetroleumMap
 from rest_api.serializers import (
     DensityMapSerializer,
@@ -138,7 +138,7 @@ class PricesViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = PricesSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = PetroleumsFilter
+    filterset_class = PricesFilter
 
     def get_queryset(self) -> QuerySet[Prices]:
         user = self.request.user
@@ -155,8 +155,17 @@ class PricesViewSet(viewsets.ReadOnlyModelViewSet):
         logger.debug('prices=%s', prices)
 
         return prices
-    
-    
+
+
+class PetroleumViewSet(viewsets.ReadOnlyModelViewSet):
+
+    queryset = Petroleum.objects.all().prefetch_related('basis').prefetch_related('product_key')
+
+    serializer_class = PetroleumSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = PetroleumFilter
+
+
 class UserRoutsCreateView(generics.ListCreateAPIView):
     serializer_class = UserRoutsSerializer
     permission_classes = [permissions.IsAuthenticated]

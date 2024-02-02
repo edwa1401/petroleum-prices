@@ -1,4 +1,4 @@
-import django_filters # type: ignore[import]
+import django_filters
 from prices_analyzer.models import Petroleum
 
 
