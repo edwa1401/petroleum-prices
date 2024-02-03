@@ -23,7 +23,8 @@ depot_pattern = (
 
 urlpatterns = [
     path('users/', views.users, name='users'),
-    path('', views.PetroleumFilterView.as_view()),
+    path('', views.index, name='index'),
+    path('petroleums/', views.PetroleumFilterView.as_view()),
     path('prod/', views.get_product_places_view),
     path('depot/', include(depot_pattern)),
     path('prices/', include(prices_pattern)),

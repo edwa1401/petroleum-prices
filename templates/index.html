@@ -1,0 +1,16 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<h1> Stock prices for gasoline and diesel for {{ num_trade_days }} SPIMEX trade days </h1>
+
+<ul>
+    <li><strong> Calculated on the basis CPT for {{ num_depots }} destination points </strong> 
+    <li><strong> from petroleum production places based on
+        <a href="https://spimex.com/files/15353/">
+            SPIMEX specification 
+        </a>
+    </strong> 
+</ul>
+
+{% endblock %}
