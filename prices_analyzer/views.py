@@ -8,6 +8,7 @@ from prices_analyzer.models import Depot, Petroleum, Prices
 from django_filters.views import FilterView
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import ListView
+from spimex_parser.models import TradeDay
 from users.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -18,6 +19,19 @@ def users(request: HttpRequest) -> HttpResponse:
         'users': users,
     }
     return render(request, 'users.html', context=context)
+
+
+def index(request: HttpRequest) -> HttpResponse:
+
+    num_trade_days = TradeDay.objects.all().count()
+    num_depots = Depot.objects.all().count()
+
+    context = {
+        'num_trade_days': num_trade_days,
+        'num_depots': num_depots,
+    }
+
+    return render(request, 'index.html', context=context)
 
 
 class PetroleumFilterView(FilterView):
