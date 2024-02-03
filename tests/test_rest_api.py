@@ -33,10 +33,10 @@ pytestmark = pytest.mark.django_db
 #     response = admin_client.get('/admin/')
 #     assert response.status_code == 200
 
-# @pytest.mark.django_db
-# def test_path_to_parser_without_day(client):
-#     response = client.get('/parser/')
-#     assert response.content == b'No day in request'
+@pytest.mark.django_db
+def test_path_to_parser_without_day(client):
+    response = client.get('/parser/')
+    assert response.content == b'No day in request'
 
 
 def test_new_user(django_user_model):
