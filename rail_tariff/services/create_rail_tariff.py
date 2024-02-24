@@ -155,3 +155,28 @@ def get_tariffs_for_all_depots() -> None:
     for depot_id in depots_id:
         get_rail_tariffs_for_depot(int(depot_id))
 
+
+@backoff.on_exception(
+        backoff.expo,
+        requests.exceptions.ConnectTimeout,
+        max_tries=10)
+
+def get_rail_tariffs_for_new_depot(depot: Depot) -> None:
+    
+    production_places_codes = get_prod_places_codes()
+    station_to = str(depot.rzd_code.code)
+
+    fuels = [Fuel['AB'], Fuel['DT']]
+
+    for station_from in production_places_codes:
+        for fuel in fuels:
+            cargo, ves = get_cargo_ves_for_fuel(fuel)
+            if not check_rail_tarif_exists(station_to, station_from, cargo):
+
+                tariff = get_tarif_from_spimex(station_to, station_from, cargo, ves)
+
+                save_rail_tariff_to_db(station_to, station_from, cargo, ves, tariff)
+
+                sleep = random.random()*3 + 0.1
+
+                time.sleep(sleep)
