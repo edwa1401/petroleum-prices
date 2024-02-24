@@ -1,4 +1,5 @@
 import pytest
+from prices_analyzer.models import Depot
 from rail_tariff.models import RzdStation
 
 from users.models import User
@@ -6,14 +7,14 @@ from users.models import User
 
 pytestmark = pytest.mark.django_db
 
-# def test_with_authenticated_client(client, django_user_model):
-#     username = "user1"
-#     password = "bar"
-#     user = django_user_model.objects.create_user(username=username, password=password)
-#     # client.force_login(user)
-#     client.login(username=username, password=password)
-#     response = client.get('/rail/rzdcode/create/')
-#     assert response.content == ''
+def test__authenticated_client__success(client, django_user_model):
+    username = "user1"
+    password = "12345"
+    user = django_user_model.objects.create_user(username=username, password=password)
+    # client.force_login(user)
+    client.login(username=username, password=password)
+    response = client.get('/accounts/login/')
+    assert response.status_code == 200
 
 
 
@@ -36,3 +37,11 @@ def test__check_rzd_station_name__success(create_rzd_station):
     new_station = create_rzd_station(station_name='Katsapetovka')
 
     assert new_station.station_name == 'Katsapetovka'
+
+
+@pytest.mark.django_db
+def test__should_create_depot__success(create_depot_db):
+
+    create_depot_db(name='Random depot')
+
+    assert Depot.objects.filter(name='Random depot').exists()

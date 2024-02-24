@@ -10,7 +10,9 @@
     "python.linting.mypyEnabled": false,
     "mypy.dmypyExecutable": "${workspaceFolder}/.venv/bin/dmypy",
 
-    "mypy.targets": ["petroleum_prices", "prices_analyzer", "spimex_parser", "rail_tariff"],
+    "mypy.targets": [
+      "petroleum_prices", "prices_analyzer", "spimex_parser", "rail_tariff", "rest_api",
+    ],
 
     "editor.rulers": [
         99
@@ -40,6 +42,6 @@
         ".mypy_cache/# Automatically created by mypy": true,
         ".mypy_cache/*": true,
         ".pytest_cache/# Created by pytest automatically.": true,
-        ".pytest_cache/*": true
+        ".pytest_cache/*": true,
       },
 }
