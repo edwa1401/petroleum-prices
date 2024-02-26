@@ -20,4 +20,4 @@ def get_rail_tariffs_for_created_depot(
         depot_id = instance.pk
         logger.info('depot_id=%s', depot_id)
         get_tariffs_for_depot.delay(depot_id=depot_id)
-
+        # TODO дальше должны создаваться prices для всех petroleums этого depots 

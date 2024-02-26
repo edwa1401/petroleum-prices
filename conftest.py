@@ -7,10 +7,13 @@ from unittest.mock import patch
 import pytest
 import requests
 from faker import Faker
+from prices_analyzer.models import Depot
 
 from prices_analyzer.shemas import ProductKeySchema, ProductSchema
 from rail_tariff.models import RzdStation
+from spimex_parser.models import TradeDay
 from spimex_parser.shemas import ContractSchema, SectionSchema, TradeDaySchema
+from users.models import User
 
 @pytest.fixture
 def create_volume():
@@ -345,6 +348,7 @@ def download_file_mock():
     with patch('spimex_parser.parser.download_file') as mock:
         yield mock
 
+
 @pytest.mark.django_db
 @pytest.fixture
 def create_rzd_station() -> RzdStation:
@@ -356,3 +360,29 @@ def create_rzd_station() -> RzdStation:
         return RzdStation.objects.create(code=code, station_name=station_name)
     return inner
 
+
+@pytest.mark.django_db
+@pytest.fixture
+def create_trade_day_db(create_day) -> TradeDay:
+    def inner(
+            day: str | None = None):
+        day = day or create_day
+        return TradeDay.objects.create(day=day)
+    return inner
+
+
+@pytest.mark.django_db
+@pytest.fixture
+def create_depot_db(client, django_user_model, create_rzd_station, make_random_string) -> Depot:
+    def inner(
+            name: str | None = None,
+            user: User | None = None,
+            rzd_code: RzdStation | None = None):
+        username = 'user'
+        password = 'password'
+        name = name or make_random_string
+        rzd_code = rzd_code or create_rzd_station()
+        user = django_user_model.objects.create_user(username=username, password=password)
+        client.force_login(user)
+        return Depot.objects.create(name=name, user=user, rzd_code=rzd_code)
+    return inner
