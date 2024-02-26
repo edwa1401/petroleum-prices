@@ -5,11 +5,15 @@ meta {
 }
 
 get {
-  url: http://127.0.0.1:8000/parser/?day=2024-01-30
+  url: http://127.0.0.1:8000/parser/?day={{day}}
   body: none
   auth: none
 }
 
 query {
-  day: 2024-01-30
+  day: {{day}}
+}
+
+vars:pre-request {
+  day: 2024-02-25
 }

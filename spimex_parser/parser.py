@@ -180,7 +180,7 @@ def create_trade_day(all_values: list[str]) -> TradeDaySchema:
 class NoTradingAtWeekendsExeption(Exception):
     pass
 
-# TODO написать тест. Добавить обработку ошибки
+# TODO написать тест. Добавить обработку ошибки. Добавить try except когда нет файла
 def get_spimex_sheet_for_day(day: datetime.date) -> sheet.Sheet:
     day_for_url = convert_date(day)
     if not day_for_url:

@@ -1,113 +1,118 @@
-# petroleum-prices
+# Petroleum-prices project
 
 
-## Install locally:
-### Clone repo: 
+## For developers:
+
+### Install locally:
+
+* Clone repo:
 ```git clone https://github.com/edwa1401/petroleum-prices.git```
 
+* Create file **_.env_** with variables:
+```env
+SECRET_KEY=<django_secret_key>
+POSTGRES_DB=<postgres_db>
+POSTGRES_USER=<postgres_user>
+POSTGRES_PASSWORD=<postgres_password>
+POSTGRES_HOST=<127.0.0.1>
+REDIS_LOCATION_CASH_URL=<redis://127.0.0.1:6379/1>
+CELERY_BROKER_URL=<redis://127.0.0.1:6379/0>
+ALLOWED_HOSTS=<localhost,127.0.0.0.1>
+TAG=<0.0.6>
+DJANGO_SETTINGS_MODULE=<petroleum_prices.settings>
+DEBUG=<True>
+```
 
-### Create file **_.env_** with variables:
-_SECRET_KEY=django_secret_key_
-_POSTGRES_DB=postgres_db_
-_POSTGRES_USER= postgres_user_
-_POSTGRES_PASSWORD=postgres_password_
-_POSTGRES_HOST='127.0.0.1'_
-_REDIS_LOCATION_CASH_URL='redis://127.0.0.1:6379/1'_
-_CELERY_BROKER_URL='redis://127.0.0.1:6379/0'_
-_ALLOWED_HOSTS='localhost,127.0.0.0.1'_
+* Install and run <a href="https://docs.docker.com/desktop/" class="external-link" target="_blank"><strong>Docker decktop</strong></a>
 
-### Install and run **docker decktop**: https://docs.docker.com/desktop/
+* Build docker containers:
+``` run commands
+docker compose pull
+docker compose build
+docker compose up-d postgresdb
+docker compose up-d redis
+docker compose up-d nginx
+docker compose up-d worker
+docker compose up-d web
+```
 
-### Build docker containers:  
-
-```docker compose pull```
-```docker compose build```
-```docker compose up-d postgresdb```
-```docker compose up-d redis```
-```docker compose up-d nginx```
-```docker compose up-d worker```
-```docker compose up-d web```
-
-### Follow link
-``` http://127.0.0.0.1```
+* Follow link <a href="http://127.0.0.0.1" class="external-link" target="_blank"><strong>http://127.0.0.0.1</strong></a>
 
 
-## Deploy
+### Deploy, CI/CD
 
-### Rent virtual maschine with static IP / rent host name
-Input to server via ssh
-run commands ```sudo apt-get
+* Rent virtual maschine with static IP / rent host name
+
+* Create ssh
+
+* Input to server via ssh
+
+* Run commands:
+```
+sudo apt-get
 sudo apt-get dist-upgrade -y
 sudo apt-get autoremote -y
-sudo reboot```
+sudo reboot
+```
+* _Optionally (for rented host name) - add public ip to rented host in host settings_
 
-_optionally (for rented host name) - add public ip to rented host in host settings_
+* Install docker (follow <a href="https://docs.docker.com/engine/install/ubuntu/#uninstall-old-versions" class="external-link" target="_blank"><strong>instructions</strong></a> _include postinstall steps_)
 
-### From local publish docker container
-At '''https://github.com/edwa1401/petroleum-prices.git''' run *** publish docker container ***
-in **github action** section
+* Create **.env** file:
+    * create variables from section **Install locally/Create file **_.env_** with variables:**
+    * add public ip/host name for variables:
+```env
+ALLOWED_HOSTS=<www.petroleum-prices.ru,petroleum-prices.ru>
+CSRF_TRUSTED_ORIGINS=<https://petroleum-prices.ru,https://www.petroleum-prices.ru>
+CSRF_ALLOWED_ORIGINS=<https://petroleum-prices.ru,https://www.petroleum-prices.ru>
+CORS_ORIGINS_WHITELIST=<https://petroleum-prices.ru,https://www.petroleum-prices.ru>
+DEBUG=False
+```
 
-### Pull docker image ```docker pull <imagename>``` _for mac add_ ```--platform=linux/amd64```
- _imagename: <ghcr.io/edwa1401/petroleum-prices:main>_
-
-### Create docker compose for deploy _deploy/docker-compose.yaml_
-change commands **build: .** by **image: <imagename>** for **web** and **worker** containers
-
-_for Mac run_ ```export DOCKER_DEFAULT_PLATFORM=linux/amd64```
-
-### Create .env for deploy
-copy dev _.env_
-change variables
-```POSTGRES_HOST=postgresdb```
-```CELERY_BROKER_URL=redis://redis:6379/0```
-
-### Input to server via ssh
-
-### Install docker https://docs.docker.com/engine/install/ubuntu/#uninstall-old-versions
-_include postinstall steps_
-
-###  Copy files to server
-
-Copy files _deploy/docker-compose.yaml_  and _deploy/.env_
-
-in **.env**  add public ip/host name for variables:
-**_ALLOWED_HOSTS_**
-**CSRF_TRUSTED_ORIGINS**
-**CSRF_ALLOWED_ORIGINS**
-**CORS_ORIGINS_WHITELIST** _Cross-Origin Resource Sharing for DRF_
-
-create dir _nginx_, folders _nginx/ssl_ and _nginx/conf.d_
-
-copy file **nginx.conf** to _nginx/conf.d_
-
-### Bundle SSL certificates
-create/copy recieved ssl certificates in folder _nginx/ssl_ as:
-**_domain.crt_**
-**_intermediate.crt_**
-**_caroot.crt_**
-
-**_domain.key_** _private key_
-**_request.csr_** _request for cert_
-
+* Create folders for nginx conf:
 run
-```cd /etc/nginx/ssl```
-```cat domain.crt intermediate.crt caroot.crt > domain.ca-bundle```
+```
+mkdir nginx
+mkdir nginx/ssl
+mkdir nginx/conf.d
+```
 
-check _hash amounts_ for cert, private key and request:
+* Copy file **deploy/nginx/conf.d/nginx.conf** to folder _nginx/conf.d_
+
+* Bundle SSL certificates
+    * create/copy recieved ssl certificates in folder **_nginx/ssl_** as:
+        **_domain.crt_**
+        **_intermediate.crt_**
+        **_caroot.crt_**
+
+        **_domain.key_** _private key_
+        **_request.csr_** _request for cert_
+
+    * bundle certs
+    run
+    ```
+    cd /etc/nginx/ssl
+    cat domain.crt intermediate.crt caroot.crt > domain.ca-bundle`
+    ```
+    * check **_hash amounts_** for cert, private key and request:
+    run
+    ```
+    openssl x509 -noout -modulus -in domain.crt | openssl md5
+    openssl x509 -noout -modulus -in domain.ca-bundle | openssl md5
+    openssl rsa -noout -modulus -in private.key | openssl md5
+    openssl req -noout -modulus -in request.csr | openssl md5
+    ```
+    _(stdin)= hash amount_
+
+* Create docker container:
 run
-```openssl x509 -noout -modulus -in domain.crt | openssl md5```
-```openssl x509 -noout -modulus -in domain.ca-bundle | openssl md5```
-```openssl rsa -noout -modulus -in private.key | openssl md5```
-```openssl req -noout -modulus -in request.csr | openssl md5```
-_(stdin)= hash amount_
+```
+docker compose pull
+docker compose up-d postgresdb
+docker compose up-d redis
+docker compose up-d nginx
+docker compose up-d worker
+docker compose up-d web
+```
 
-### Create docker container
-run
-```docker compose pull```
-```docker compose up-d postgresdb```
-```docker compose up-d redis```
-```docker compose up-d nginx```
-```docker compose up-d worker```
-
-### Follow link
-``` https:\\project's_host_name```
+* Check link <a href="https://www.petroleum-prices.ru" class="external-link" target="_blank"><strong>petroleum-prices.ru</strong></a>
