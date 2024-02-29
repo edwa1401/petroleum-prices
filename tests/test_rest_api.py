@@ -40,10 +40,9 @@ def test__check_rzd_station_name__success(create_rzd_station):
 
 
 @pytest.mark.django_db
-def test__should_create_depot__success(create_depot_db, create_signal_for_created_depot_mock):
+def test__should_create_depot__success(create_depot_db):
 
     create_depot_db(name='Random depot')
-    create_signal_for_created_depot_mock
 
     assert Depot.objects.filter(name='Random depot').exists()
 
