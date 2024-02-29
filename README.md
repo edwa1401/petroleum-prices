@@ -36,7 +36,7 @@ docker compose up-d worker
 docker compose up-d web
 ```
 
-* Follow link <a href="http://127.0.0.0.1" class="external-link" target="_blank"><strong>http://127.0.0.0.1</strong></a>
+* Follow link <a href="http://127.0.0.1" class="external-link" target="_blank"><strong>http://127.0.0.1</strong></a>
 
 
 ### Deploy, CI/CD
@@ -56,7 +56,7 @@ sudo reboot
 ```
 * _Optionally (for rented host name) - add public ip to rented host in host settings_
 
-* Install docker (follow <a href="https://docs.docker.com/engine/install/ubuntu/#uninstall-old-versions" class="external-link" target="_blank"><strong>instructions</strong></a> _include postinstall steps_)
+* Install docker (follow <a href="https://docs.docker.com/engine/install/ubuntu/#uninstall-old-versions" class="external-link" target="_blank"><strong>instructions</strong></a> _include_ **_postinstall steps_**)
 
 * Create **.env** file:
     * create variables from section **Install locally/Create file **_.env_** with variables:**
@@ -70,8 +70,7 @@ DEBUG=False
 ```
 
 * Create folders for nginx conf:
-run
-```
+``` run
 mkdir nginx
 mkdir nginx/ssl
 mkdir nginx/conf.d
@@ -81,6 +80,7 @@ mkdir nginx/conf.d
 
 * Bundle SSL certificates
     * create/copy recieved ssl certificates in folder **_nginx/ssl_** as:
+        
         **_domain.crt_**
         **_intermediate.crt_**
         **_caroot.crt_**
@@ -88,15 +88,13 @@ mkdir nginx/conf.d
         **_domain.key_** _private key_
         **_request.csr_** _request for cert_
 
-    * bundle certs
-    run
-    ```
+    * bundle certs:
+    ```run
     cd /etc/nginx/ssl
     cat domain.crt intermediate.crt caroot.crt > domain.ca-bundle`
     ```
     * check **_hash amounts_** for cert, private key and request:
-    run
-    ```
+    ```run
     openssl x509 -noout -modulus -in domain.crt | openssl md5
     openssl x509 -noout -modulus -in domain.ca-bundle | openssl md5
     openssl rsa -noout -modulus -in private.key | openssl md5
@@ -105,8 +103,8 @@ mkdir nginx/conf.d
     _(stdin)= hash amount_
 
 * Create docker container:
-run
-```
+
+```run
 docker compose pull
 docker compose up-d postgresdb
 docker compose up-d redis

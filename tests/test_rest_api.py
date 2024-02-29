@@ -39,10 +39,11 @@ def test__check_rzd_station_name__success(create_rzd_station):
     assert new_station.station_name == 'Katsapetovka'
 
 
-# @pytest.mark.django_db
-# def test__should_create_depot__success(create_depot_db):
+@pytest.mark.django_db
+def test__should_create_depot__success(create_depot_db):
 
-#     create_depot_db(name='Random depot')
+    create_depot_db(name='Random depot')
 
-#     assert Depot.objects.filter(name='Random depot').exists()
+    assert Depot.objects.filter(name='Random depot').exists()
+
 # TODO вызывает сигнал WARNING  kombu.connection:connection.py:669 No hostname was supplied. Reverting to default 'localhost'

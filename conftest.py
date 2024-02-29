@@ -15,6 +15,8 @@ from spimex_parser.models import TradeDay
 from spimex_parser.shemas import ContractSchema, SectionSchema, TradeDaySchema
 from users.models import User
 
+pytest_plugins = ("celery.contrib.pytest", )
+
 @pytest.fixture
 def create_volume():
     return round(random.uniform(1.00, 100000000.99), 2)
@@ -371,9 +373,20 @@ def create_trade_day_db(create_day) -> TradeDay:
     return inner
 
 
+@pytest.fixture
+def create_signal_for_created_depot_mock():
+    with patch('prices_analyzer.signals.get_rail_tariffs_for_created_depot') as mock:
+        yield mock
+
+
 @pytest.mark.django_db
 @pytest.fixture
-def create_depot_db(client, django_user_model, create_rzd_station, make_random_string) -> Depot:
+def create_depot_db(
+    client,
+    django_user_model,
+    create_rzd_station,
+    make_random_string,
+    ) -> Depot:
     def inner(
             name: str | None = None,
             user: User | None = None,
@@ -386,3 +399,6 @@ def create_depot_db(client, django_user_model, create_rzd_station, make_random_s
         client.force_login(user)
         return Depot.objects.create(name=name, user=user, rzd_code=rzd_code)
     return inner
+
+
+

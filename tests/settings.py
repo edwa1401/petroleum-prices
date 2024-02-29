@@ -10,3 +10,4 @@ CACHES = {
         "BACKEND": "django.core.cache.backends.dummy.DummyCache",
     }
 }
+CELERY_BROKER_URL = 'redis://'
