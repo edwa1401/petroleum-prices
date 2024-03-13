@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from prices_analyzer.models import Depot, ProductionPlace, UserRouts
+from prices_analyzer.models import Depot, ProductionPlace
 from rail_tariff.models import RzdStation
 from rest_api.models import PetroleumMap, DensityMap
 
@@ -35,7 +35,3 @@ class RzdStationSerializer(serializers.ModelSerializer):
         fields = ['code', 'station_name']
 
 
-class UserRoutsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserRouts
-        fields = ['depot', 'production_place', 'title']

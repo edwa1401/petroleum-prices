@@ -1,4 +1,4 @@
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -7,6 +7,7 @@ from rail_tariff.models import RzdStation
 from rail_tariff.services.create_rail_tariff import (
     get_rail_tariff_from_spimex,
     get_tariffs_for_all_depots,
+    get_rail_tariffs_for_depot
 )
 
 class RzdCodeDetailView(DetailView):
@@ -66,3 +67,12 @@ def create_rail_tariff_view(request: HttpRequest) -> HttpResponse:
 
     return HttpResponse('succes')
     
+def create_rail_tariffs_for_depot(request: HttpRequest) -> HttpResponse:
+    depot_id = request.GET.get('depot_id')
+    if not depot_id:
+        return HttpResponseBadRequest('should be depots id')
+
+    
+    get_rail_tariffs_for_depot(depot_id=int(depot_id))
+
+    return HttpResponse('succes')

@@ -1,5 +1,5 @@
+import logging
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
-from django.shortcuts import render  # noqa: F401
 
 from prices_analyzer.services.petroleum import (
     get_petroleums_from_products,
@@ -12,6 +12,8 @@ from spimex_parser.parser import (
     get_date,
     save_trade_day_to_db,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def trade_day_to_db_view(request: HttpRequest) -> HttpResponse:
@@ -26,6 +28,7 @@ def trade_day_to_db_view(request: HttpRequest) -> HttpResponse:
 
     trade_day = fetch_trade_day(day=day)
     products = get_products_from_trade_day(trade_day=trade_day)
+    logger.debug('products=%s', products)
     petroleums = get_petroleums_from_products(products=products)
 
 

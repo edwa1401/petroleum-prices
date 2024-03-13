@@ -77,8 +77,7 @@ def test__get_url_to_spimex_data__success(date, expected):
     ]
 )
 def test__get_url_to_spimex_data__fail(date, expected):
-    with pytest.raises(AssertionError):
-        assert parser.get_url_to_spimex_data(date) == expected
+    assert parser.get_url_to_spimex_data(date) != expected
 
 
 def test__download_file__success(make_request_response):
@@ -125,10 +124,10 @@ def test__get_searched_string_from_all_values__success(all_values, search_value,
     assert parser.get_searched_string_from_all_values(all_values, search_value, prefix) == expected
 
 
-def test__convert_contract__success(make_contract_str, make_code, make_petroleum_price, create_contract):
+def test__convert_contract__success(make_xls_contract_row, make_trade_code, contract_petroleum_price, create_contract):
 
-    code = make_code(product='A100', basis='UFM', lot_size='060', shipment='F')
-    price = make_petroleum_price
+    code = make_trade_code(product='A100', basis='UFM', lot_size='060', shipment='F')
+    price = contract_petroleum_price
     name = 'Продукт (марка бензина/сорт ДТ), ст. отправления'
     base = 'жд станция / пункт налива / нефтебаза'
     volume = '120'
@@ -137,7 +136,7 @@ def test__convert_contract__success(make_contract_str, make_code, make_petroleum
     price_change_ration = '0.50'
     num_of_lot = '1'
 
-    contract = make_contract_str(
+    contract = make_xls_contract_row(
         code=code,
         name=name,
         base=base,
@@ -175,18 +174,17 @@ def test__convert_contract__success(make_contract_str, make_code, make_petroleum
 
 
 def test__convert_contract__fail_return_assertion_error_for_different_result_in_code(
-        make_contract_str,
-        make_code,
+        make_xls_contract_row,
+        make_trade_code,
         create_contract):
 
-    code = make_code(product='A100', basis='UFM', lot_size='060', shipment='F')
+    code = make_trade_code(product='A100', basis='UFM', lot_size='060', shipment='F')
 
-    contract = make_contract_str(code=code)
+    contract = make_xls_contract_row(code=code)
 
     expected = create_contract(code='A595UFM060F')
 
-    with pytest.raises(AssertionError):
-        assert parser.convert_contract(contract=contract) == expected
+    assert parser.convert_contract(contract=contract) != expected
 
 
 def test__get_spimex_sheet_for_day__open_first_sheet_from_excel(

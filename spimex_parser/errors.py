@@ -1,0 +1,2 @@
+class NoTradingAtWeekendsExeption(Exception):
+    pass

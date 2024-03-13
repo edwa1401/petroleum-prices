@@ -1,0 +1,45 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <title>Petroleum filter</title>
+</head>
+<body>
+    <h1> Filtered petroleums for trading period</h1>
+    <form method="get" action="{% url 'prices_analyzer:petroleum_list' %}">
+        <p>Petroleum sort: <input type="text" name="petroleum_sort_filter" value={{petroleum_sort_filter}}/></p>
+        <p>Basis name: <input type="text" name="basis_name_filter" value={{basis_name_filter}}/></p>
+        <p>Metric: <input type="text" name="metric_filter" value={{metric_filter}}/></p>
+        <p>Min volume: <input type="number" name="volume_filter" value={{volume_filter}}/></p>
+        <p>Max price: <input type="number" name="metric_filter" value={{metric_filter}}/></p>
+        <p>Min day: <input type="number" name="min_day_filter" value={{min_day_filter}}/></p>
+        <p>Max day: <input type="number" name="max_day_filter" value={{max_day_filter}}/></p>
+
+        <p><input type="submit" name="submit" value="submit"/></p>
+
+    </form>
+    <table>
+        <thead>
+          <tr>
+            <th scope="col">День</th>
+            <th scope="col">Топливо</th>
+            <th scope="col">Базис</th>
+            <th scope="col">Объем</th>
+            <th scope="col">Цена</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for petroleum in petroleums %}
+          <tr>
+            <td>{{ petroleum.day }}</td>
+            <td>{{ petroleum.product_key.sort }}</td>
+            <td>{{ petroleum.basis.name }}</td>
+            <td>{{ petroleum.volume }}</td>
+            <td>{{ petroleum.price }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+</body>
+{% endblock %}

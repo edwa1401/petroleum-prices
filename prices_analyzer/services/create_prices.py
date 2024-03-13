@@ -5,14 +5,15 @@ import logging
 from django.db.models.query import QuerySet
 
 from prices_analyzer.models import Prices, ProductionPlace, Depot, Petroleum
-from prices_analyzer.shemas import PetroleumSort
+from prices_analyzer.schemas import PetroleumSort
 from rail_tariff.models import RailTariff
 from django.db.models import Q
+from rail_tariff.schemas import Cargo
 
 
 logger = logging.getLogger(__name__)
 
-# TODO 1. Переделать в класс 2. Создать функцию, которая будет принимать depot/кастомный маршрут
+# TODO 1. Переделать в класс 2. Создать функцию, которая будет принимать depot
 # и создавать prices для всех существующих petroleums и этого депот
 
 def get_period_for_petroleums(
@@ -24,7 +25,7 @@ def get_period_for_petroleums(
     return [start_date + datetime.timedelta(days=day) for day in range(delta.days + 1)]
 
 
-def create_prices_for_user_routs_for_all_days(depot: Depot) -> None:
+def create_prices_for_new_depot_for_all_days(depot: Depot) -> None:
     pass
 
 
@@ -79,16 +80,16 @@ def create_prices_for_production_place(
 
 
 
-AB = [PetroleumSort.AI100, PetroleumSort.AI98, PetroleumSort.AI95, PetroleumSort.AI92]
-DT = [PetroleumSort.DTL, PetroleumSort.DTD, PetroleumSort.DTZ]
+AB = (PetroleumSort.AI100, PetroleumSort.AI98, PetroleumSort.AI95, PetroleumSort.AI92)
+DT = (PetroleumSort.DTL, PetroleumSort.DTD, PetroleumSort.DTZ)
 
 
 def get_cargo_code(petroleum_sort: PetroleumSort) -> int | None:
 
     if petroleum_sort in AB:
-        return 21105
+        return int(Cargo.AB.value)
     elif petroleum_sort in DT:
-        return 21404
+        return int(Cargo.DT.value)
     else:
         return None
     

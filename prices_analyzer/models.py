@@ -50,15 +50,6 @@ class Depot(TimeStampedModel, models.Model):
 
     def __str__(self) -> str:
         return f' Petroleum depot: {self.name}'
-
-
-class UserRouts(TimeStampedModel, models.Model):
-    depot = models.ForeignKey(Depot, on_delete=models.PROTECT)
-    production_place = models.ManyToManyField(ProductionPlace)
-    title = models.CharField(max_length=1000, blank=True)
-    def __str__(self) -> str:
-        return f' Depot: {self.depot}, production place {self.production_place}, \
-            title: {self.title}'
     
     
 class Petroleum(TimeStampedModel, models.Model):

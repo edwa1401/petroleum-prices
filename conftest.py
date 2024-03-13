@@ -9,21 +9,21 @@ import requests
 from faker import Faker
 from prices_analyzer.models import Depot
 
-from prices_analyzer.shemas import ProductKeySchema, ProductSchema
+from prices_analyzer.schemas import ProductKeySchema, ProductSchema
 from rail_tariff.models import RzdStation
 from spimex_parser.models import TradeDay
-from spimex_parser.shemas import ContractSchema, SectionSchema, TradeDaySchema
+from spimex_parser.schemas import ContractSchema, SectionSchema, TradeDaySchema
 from users.models import User
 
 pytest_plugins = ("celery.contrib.pytest", )
 
 @pytest.fixture
-def create_volume():
+def contract_volume():
     return round(random.uniform(1.00, 100000000.99), 2)
 
 
 @pytest.fixture
-def create_amount():
+def contract_amount():
     return round(random.uniform(1.00, 100000000000000.99), 2)
     
 
@@ -40,7 +40,7 @@ def make_random_string():
 
 
 @pytest.fixture
-def make_code():
+def make_trade_code():
     def inner(
             product: str | None = None,
             basis: str | None = None,
@@ -56,14 +56,12 @@ def make_code():
 
 
 @pytest.fixture
-def make_petroleum_price():
-    def inner():
-        return round(random.uniform(1.00, 1000000,99), 2)
-    return inner
+def contract_petroleum_price():
+    return str(round(random.uniform(1.00, 1000000.99), 2))
 
 
 @pytest.fixture
-def make_contract_str(make_code, make_petroleum_price, create_volume, create_amount):
+def make_xls_contract_row(make_trade_code, contract_petroleum_price, contract_volume, contract_amount):
     def inner(
             code: str | None = None,
             name: str | None = None,
@@ -80,19 +78,19 @@ def make_contract_str(make_code, make_petroleum_price, create_volume, create_amo
             price_best_call: str | None = None,
             num_of_lot: str | None = None
     ):
-        code = code or make_code
+        code = code or make_trade_code
         name = name or 'Продукт (марка бензина/сорт ДТ), ст. отправления'
         base = base or 'жд станция / пункт налива / нефтебаза'
-        volume = volume or str(create_volume)
-        amount = amount or str(create_amount)
+        volume = volume or str(contract_volume)
+        amount = amount or str(contract_amount)
         price_change_amount = price_change_amount or str(random.randint(60, 1000))
         price_change_ration = price_change_ration or str(round(random.uniform(0.1, 100.0), 2))
-        price_min = price_min or str(make_petroleum_price)
-        price_avg = price_avg or str(make_petroleum_price)
-        price_max = price_max or str(make_petroleum_price)
-        price_market = price_market or str(make_petroleum_price)
-        price_best_bid = price_best_bid or str(make_petroleum_price)
-        price_best_call = price_best_call or str(make_petroleum_price)
+        price_min = price_min or contract_petroleum_price
+        price_avg = price_avg or contract_petroleum_price
+        price_max = price_max or contract_petroleum_price
+        price_market = price_market or contract_petroleum_price
+        price_best_bid = price_best_bid or contract_petroleum_price
+        price_best_call = price_best_call or contract_petroleum_price
         num_of_lot = num_of_lot or str(random.randint(0, 50))
         return [
             code, name, base, volume, amount, price_change_amount,
@@ -103,10 +101,10 @@ def make_contract_str(make_code, make_petroleum_price, create_volume, create_amo
 
 
 @pytest.fixture
-def create_contracts_str(make_contract_str):
+def create_contracts_str(make_xls_contract_row):
     def inner(num_of_contracts: int | None = None):
         num_of_contracts = num_of_contracts or 10
-        return [make_contract_str for _ in range(num_of_contracts)]
+        return [make_xls_contract_row for _ in range(num_of_contracts)]
     return inner
 
 
@@ -226,7 +224,7 @@ def create_day():
 
 
 @pytest.fixture
-def create_contract(make_contract_str):
+def create_contract(make_xls_contract_row):
     def inner(
             code: str | None = None,
             name: str | None = None,
@@ -243,7 +241,7 @@ def create_contract(make_contract_str):
             price_best_call: str | None = None,
             num_of_lots: str | None = None
     ):
-        contract = make_contract_str()
+        contract = make_xls_contract_row()
         return ContractSchema(
             code=code or contract[0],
             name=name or contract[1],
@@ -263,11 +261,11 @@ def create_contract(make_contract_str):
     return inner
 
 @pytest.fixture
-def create_product_key(make_code, create_contract):
+def create_product_key(make_trade_code, create_contract):
     def inner(code: str | None = None,
               base_name: str | None = None):
 
-        code = code or make_code
+        code = code or make_trade_code
         base_name = base_name or 'жд станция'
 
         contract = create_contract(code=code, base=base_name)
@@ -280,7 +278,7 @@ def create_product_key(make_code, create_contract):
     return inner
 
 @pytest.fixture
-def create_trade_day(create_contract, make_date, make_code, create_volume, create_amount):
+def create_trade_day(create_contract, make_date, make_trade_code, contract_volume, contract_amount):
     def inner(input_day: str | None = None,
               section_names: list[str] | None = None,
               section_metrics: list[str] | None = None,
@@ -293,8 +291,8 @@ def create_trade_day(create_contract, make_date, make_code, create_volume, creat
         section_metrics = section_metrics or ['Килограмм', 'Метрическая тонна']
 
         contracts = contracts or [
-            [create_contract(code=make_code, base=base, volume=create_volume, amount=create_amount) for _ in range(random.randint(0, 10))],
-            [create_contract(code=make_code, base=base, volume=create_volume, amount=create_amount) for _ in range(random.randint(0, 10))]
+            [create_contract(code=make_trade_code, base=base, volume=contract_volume, amount=contract_amount) for _ in range(random.randint(0, 10))],
+            [create_contract(code=make_trade_code, base=base, volume=contract_volume, amount=contract_amount) for _ in range(random.randint(0, 10))]
         ]
         return TradeDaySchema(
             day=day,
@@ -315,7 +313,7 @@ def create_trade_day(create_contract, make_date, make_code, create_volume, creat
 
 
 @pytest.fixture
-def create_product(create_product_key, make_date, create_volume, create_amount):
+def create_product(create_product_key, make_date, contract_volume, contract_amount):
     def inner(
             product_key: ProductKeySchema | None = None,
             volume: float | None = None,
@@ -324,8 +322,8 @@ def create_product(create_product_key, make_date, create_volume, create_amount):
             inp_day: str | None = None
     ):
         product_key = product_key or create_product_key
-        volume = volume or create_volume
-        amount = amount or create_amount
+        volume = volume or contract_volume
+        amount = amount or contract_amount
         metric = metric or random.choice(['Килограмм','Метрическая тонна'])
         day = make_date(inp_day) or make_date
 

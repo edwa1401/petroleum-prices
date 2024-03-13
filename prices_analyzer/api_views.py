@@ -42,9 +42,8 @@ def get_prices_for_period_view(request: HttpRequest) -> JsonResponse:
         return JsonResponse({}, status=200, safe=False)
 
     
-    else:
-        view_prices = [serialize_prices(price) for price in prices]
-        return JsonResponse(view_prices, status=200, safe=False)
+    view_prices = [serialize_prices(price) for price in prices]
+    return JsonResponse(view_prices, status=200, safe=False)
 
 
 class PricesListView(generics.ListAPIView):

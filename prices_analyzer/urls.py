@@ -25,6 +25,7 @@ urlpatterns = [
     path('users/', views.users, name='users'),
     path('', views.index, name='index'),
     path('petroleums/', views.PetroleumFilterView.as_view()),
+    path('petroleum/', views.PetroleumListFilterView.as_view(), name='petroleum_list'),
     path('prod/', views.get_product_places_view),
     path('depot/', include(depot_pattern)),
     path('prices/', include(prices_pattern)),

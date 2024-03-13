@@ -1,7 +1,15 @@
 
+import decimal
+import logging
 from pathlib import Path
-from prices_analyzer.shemas import PetroleumSchema, PetroleumSort, ProductSchema
+
 import orjson
+
+from prices_analyzer.schemas import PetroleumSchema, PetroleumSort, ProductSchema
+from rest_api.models import DensityMap, PetroleumMap
+
+logger = logging.getLogger(__name__)
+
 
 class PetroleumConverter:
     def __init__(self) -> None:
@@ -31,7 +39,7 @@ class PetroleumConverter:
         }
         self._density_map = self._get_density()
 
-    def convert(self, product: ProductSchema) -> PetroleumSchema:
+    def _convert_from_json(self, product: ProductSchema) -> PetroleumSchema:
         petroleum_sort = self._petroleum_map.get(
             product.product_key.name, PetroleumSort.OTHER_PRODUCTS
             )
@@ -44,3 +52,36 @@ class PetroleumConverter:
             sort=petroleum_sort,
             density=self._density_map[petroleum_sort]
         )
+    
+    def convert(self, product: ProductSchema) -> PetroleumSchema:
+        petroleum_sort = self.get_petroleum_sort(product)
+        logger.debug('petroleum_sort=%s', petroleum_sort.value)
+        density = self.get_density(petroleum_sort.value)
+
+        return PetroleumSchema(
+            product_key=product.product_key,
+            volume=product.volume,
+            amount=product.amount,
+            metric=product.metric,
+            day=product.day,
+            sort=petroleum_sort,
+            density=float(density),
+        )
+    
+    def get_petroleum_sort(self, product: ProductSchema) -> PetroleumSort:
+
+        petroleum_map = PetroleumMap.objects.all()
+        
+        sort = petroleum_map.filter(petroleum_code=product.product_key.name).first()
+        if not sort:
+            return PetroleumSort.OTHER_PRODUCTS
+
+        return PetroleumSort[sort.sort]
+
+
+    def get_density(self, petroleum_sort: str) -> decimal.Decimal:
+        
+        density = DensityMap.objects.get(sort=petroleum_sort)
+        
+        return density.density
+

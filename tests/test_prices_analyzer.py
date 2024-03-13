@@ -20,8 +20,8 @@ def test__get_product_key__fail_return_error_for_different_values(create_contrac
 
     expected = create_product_key(code='A595ABE010A', base_name='НБ Абзелиловская')
 
-    with pytest.raises(AssertionError):
-        assert get_product_key(contract=contract) == expected
+
+    assert get_product_key(contract=contract) != expected
 
 
 def test__get_contracts_volumes_sum__sucess(create_contract, create_product_key):
@@ -50,8 +50,7 @@ def test__get_contracts_volumes_sum__fail_diff_in_base_name(create_contract, cre
 
     expected = {product_key_1: 300.0}
 
-    with pytest.raises(AssertionError):
-        assert get_contracts_volumes_sum(contracts) == expected
+    assert get_contracts_volumes_sum(contracts) != expected
 
 
 def test__get_contracts_volumes_sum__fail_diff_in_code_name(create_contract, create_product_key):
@@ -64,8 +63,7 @@ def test__get_contracts_volumes_sum__fail_diff_in_code_name(create_contract, cre
 
     expected = {product_key_1: 300.0}
 
-    with pytest.raises(AssertionError):
-        assert get_contracts_volumes_sum(contracts) == expected
+    assert get_contracts_volumes_sum(contracts) != expected
 
 
 def test__get_contracts_amount_sum__sucess(create_contract, create_product_key):
@@ -94,8 +92,7 @@ def test__get_contracts_amount_sum__fail_diff_in_code_base(create_contract, crea
 
     expected = {product_key_1: 300.0}
 
-    with pytest.raises(AssertionError):
-        assert get_contracts_amount_sum(contracts) == expected
+    assert get_contracts_amount_sum(contracts) != expected
 
 
 def test__get_products_from_trade_day__success(make_date_str, create_trade_day, create_contract, create_product, create_product_key):

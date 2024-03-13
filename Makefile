@@ -2,7 +2,7 @@ include .env
 export
 
 style: 
-	ruff .
+	ruff check .
 types:
 	mypy .
 

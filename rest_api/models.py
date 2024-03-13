@@ -3,13 +3,12 @@ from django_extensions.db.models import TimeStampedModel
 from prices_analyzer.models import Petroleum, ProductKey
 
 
-
 class PetroleumMap(TimeStampedModel, models.Model):
     sort = models.CharField(choices=ProductKey.Sort.choices, max_length=20, blank=False)
     petroleum_code = models.CharField(max_length=4)
 
     def __str__(self) -> str:
-        return f'petroleums sort {self.sort}code: {self.petroleum_code}'
+        return f'petroleums sort {self.sort} code: {self.petroleum_code}'
 
 
 class DensityMap(TimeStampedModel, models.Model):

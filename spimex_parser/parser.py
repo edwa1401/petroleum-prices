@@ -10,8 +10,9 @@ from prices_analyzer.services.petroleum import (
     get_products_from_trade_day,
     save_petroleums_to_db,
 )
+from spimex_parser.errors import NoTradingAtWeekendsExeption
 from spimex_parser.models import Contract, Section, TradeDay
-from spimex_parser.shemas import ContractSchema, SectionSchema, TradeDaySchema
+from spimex_parser.schemas import ContractSchema, SectionSchema, TradeDaySchema
 
 
 def get_date(date: str) -> datetime.date:
@@ -176,9 +177,6 @@ def create_trade_day(all_values: list[str]) -> TradeDaySchema:
         day=fetch_day(all_values),
         sections=create_sections(all_values, sections)
     )
-
-class NoTradingAtWeekendsExeption(Exception):
-    pass
 
 # TODO написать тест. Добавить обработку ошибки. Добавить try except когда нет файла
 def get_spimex_sheet_for_day(day: datetime.date) -> sheet.Sheet:
