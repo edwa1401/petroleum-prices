@@ -1,11 +1,10 @@
 from django.contrib import admin
-from prices_analyzer.models import ProductionPlace, Basis, Depot
+from prices_analyzer.models import ProductionPlace, Basis, Depot, ProductKey, Petroleum, Prices
 
 
 class ProdictionPlaceAdmin(admin.ModelAdmin):
-    # list_display = ('basis_code', 'basis_name', 'rzd_code_code', 'rzd_code_station_name', 'name')
-    # list_filter = ('basis_name', 'rzd_code_station_name', 'name')
-    pass
+    list_display = ('basis', 'rzd_code', 'name')
+    list_filter = ('basis', 'rzd_code', 'name')
 
 
 admin.site.register(ProductionPlace, ProdictionPlaceAdmin)
@@ -13,3 +12,6 @@ admin.site.register(ProductionPlace, ProdictionPlaceAdmin)
 
 admin.site.register(Basis)
 admin.site.register(Depot)
+admin.site.register(ProductKey)
+admin.site.register(Petroleum)
+admin.site.register(Prices)

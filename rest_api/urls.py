@@ -26,8 +26,6 @@ urlpatterns = [
     path('depot/', views.DepotCreateView.as_view()),
     path('depots/', views.DepotListView.as_view()),
     path('prices_two_weeks/', views.PricesUserListView.as_view()),
-    path('user_routs/', views.UserRoutsCreateView.as_view()),
-    path('custom_prices/', views.UserRoutsPricesView.as_view()),
 ]
 
 urlpatterns += router.urls

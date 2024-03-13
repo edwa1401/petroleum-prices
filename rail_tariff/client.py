@@ -1,47 +1,15 @@
-import decimal
-import enum
 import logging
 import re
-from dataclasses import dataclass
 
 import requests
 from bs4 import BeautifulSoup
-from pydantic import BaseModel, Field
+
+from rail_tariff import schemas
+from rail_tariff.errors import SessionNotFoundError
 
 
 logger = logging.getLogger(__name__)
 
-class Fuel(enum.Enum):
-    AB = 'AB'
-    DT = 'DT'
-
-
-@dataclass
-class RailTariffSchema:
-    rail_code_base_to: str
-    rail_code_base_from: str
-    weight: int
-    cargo: int
-    distance: int
-    tarif: decimal.Decimal
-
-class SessionNotFoundError(Exception):
-    pass
-
-
-
-class RailTariff(BaseModel):
-    distance: int
-    tarif: decimal.Decimal = Field(alias='sumtWithVat')
-
-
-SPIMEX_RZD_CARGO_TYPE = '43'
-SPIMEX_RZD_CARGO_TONNAGE = '66'
-NUMBER_OF_VAGONS = '1'
-NUMBER_OF_SECURED_VAGONS = '1'
-NUMBER_OF_CONDUCTORS = '0'
-NUMBER_OF_AXLES = '4'
-TYPE_OF_VAGON_POSSESSION = '2'
 
 class RailTariffClient:
     def __init__(self) -> None:
@@ -87,24 +55,24 @@ class RailTariffClient:
             station_to: str,
             cargo: str,
             ves: str
-            ) -> RailTariff:
+            ) -> schemas.RailTariff:
         
         session_id = self.get_session()
 
         data = {
             'action': 'getCalculation',
             'sessid': session_id,
-            'type': SPIMEX_RZD_CARGO_TYPE,
+            'type': schemas.SPIMEX_RZD_CARGO_TYPE,
             'st1': station_from,
             'st2': station_to,
             'kgr': cargo,
             'ves': ves,
-            'gp': SPIMEX_RZD_CARGO_TONNAGE,
-            'nv': NUMBER_OF_VAGONS,
-            'nvohr': NUMBER_OF_SECURED_VAGONS,
-            'nprov': NUMBER_OF_CONDUCTORS,
-            'osi': NUMBER_OF_AXLES,
-            'sv': TYPE_OF_VAGON_POSSESSION,
+            'gp': schemas.SPIMEX_RZD_CARGO_TONNAGE,
+            'nv': schemas.NUMBER_OF_VAGONS,
+            'nvohr': schemas.NUMBER_OF_SECURED_VAGONS,
+            'nprov': schemas.NUMBER_OF_CONDUCTORS,
+            'osi': schemas.NUMBER_OF_AXLES,
+            'sv': schemas.TYPE_OF_VAGON_POSSESSION,
         }
         response = self.session.post(url=self.url_tarif_calc, data=data)
         response.raise_for_status()
@@ -112,6 +80,4 @@ class RailTariffClient:
         payload = response.json()
 
         total = payload['data']['total']
-        return RailTariff(**total)
-
-
+        return schemas.RailTariff(**total)

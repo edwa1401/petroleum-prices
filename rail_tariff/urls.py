@@ -15,6 +15,7 @@ rzdstation_patterns = (
 tarif_patterns = (
     [
     path('create/', views.create_rail_tariff_view),
+    path('create/<int:depot_id>/', views.create_rail_tariffs_for_depot),
     path('get/', views.get_rail_tariff_view)
 ],
 'tarif'

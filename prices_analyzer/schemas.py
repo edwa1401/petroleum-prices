@@ -11,7 +11,7 @@ class PetroleumSort(enum.Enum):
     DTL = 'DTL'
     DTD = 'DTD'
     DTZ = 'DTZ'
-    OTHER_PRODUCTS = 'Other products'
+    OTHER_PRODUCTS = 'OTHER_PRODUCTS'
 
 
 class Metric(enum.Enum):

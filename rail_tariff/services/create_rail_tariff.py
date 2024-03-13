@@ -3,9 +3,9 @@ import backoff
 from django.shortcuts import get_object_or_404
 import requests
 from prices_analyzer.models import Depot, ProductionPlace
+from rail_tariff.errors import IncorrectCargoValueError
 from rail_tariff.models import RailTariff, RzdStation
-from rail_tariff.shemas import Fuel, RailTariffClient
-from rail_tariff import shemas
+from rail_tariff import schemas, client
 import time
 import random
 
@@ -17,9 +17,9 @@ def get_rail_tariff_from_spimex(
         station_from: str,
         cargo: str,
         ves: str
-        ) -> shemas.RailTariff:
+        ) -> schemas.RailTariff:
 
-    rail_tarif = RailTariffClient()
+    rail_tarif = client.RailTariffClient()
 
     return rail_tarif.get_rail_tariff(station_to=station_to,
             station_from=station_from,
@@ -32,7 +32,7 @@ def save_rail_tariff_to_db(
         station_from: str,
         cargo: str,
         ves: str,
-        tariff: shemas.RailTariff) -> bool:
+        tariff: schemas.RailTariff) -> bool:
 
     try:
         rail_code_base_to = get_object_or_404(RzdStation, code=station_to)
@@ -62,20 +62,14 @@ def get_prod_places_codes() -> list[str]:
     return prod_places_codes
 
 
-class IncorrectCargoValueError(Exception):
-    pass
 
+def get_cargo_ves_for_fuel(fuel: schemas.Fuel) -> tuple[str, str]:
 
-def get_cargo_ves_for_fuel(fuel: Fuel) -> tuple[str, str]:
+    cargo = schemas.Cargo[fuel.name].value
+    ves = schemas.CargoWeight[fuel.name].value
+    logger.debug('cargo=%s, ves=%s', cargo, ves)
     
-    if fuel.value == 'AB':
-        cargo = '21105'
-        ves = '52'
-    elif fuel.value == 'DT':
-        cargo = '21404'
-        ves = '55'
-    
-    else:
+    if not cargo or not ves:
         raise IncorrectCargoValueError
     
     return cargo, ves
@@ -102,10 +96,10 @@ def get_tarif_from_spimex(
         station_to: str,
         station_from: str,
         cargo: str,
-        ves: str) -> shemas.RailTariff:
+        ves: str) -> schemas.RailTariff:
     
     
-    rail_tarif_client = RailTariffClient()
+    rail_tarif_client = client.RailTariffClient()
 
     logger.info(
         'req works: to=%s, from=%s, cargo=%s', station_to, station_from, cargo
@@ -129,15 +123,15 @@ def get_tarif_from_spimex(
         interval=60)
 
 def get_rail_tariffs_for_depot(depot_id: int) -> None:
+
+    depot = get_object_or_404(Depot, id=depot_id)
     
     production_places_codes = get_prod_places_codes()
-    depot = get_object_or_404(Depot, id=depot_id)
+
     station_to = str(depot.rzd_code.code)
 
-    fuels = [Fuel['AB'], Fuel['DT']]
-
     for station_from in production_places_codes:
-        for fuel in fuels:
+        for fuel in list(schemas.Fuel):
             cargo, ves = get_cargo_ves_for_fuel(fuel)
             if not check_rail_tarif_exists(station_to, station_from, cargo):
 
@@ -166,10 +160,8 @@ def get_rail_tariffs_for_new_depot(depot: Depot) -> None:
     production_places_codes = get_prod_places_codes()
     station_to = str(depot.rzd_code.code)
 
-    fuels = [Fuel['AB'], Fuel['DT']]
-
     for station_from in production_places_codes:
-        for fuel in fuels:
+        for fuel in list(schemas.Fuel):
             cargo, ves = get_cargo_ves_for_fuel(fuel)
             if not check_rail_tarif_exists(station_to, station_from, cargo):
 

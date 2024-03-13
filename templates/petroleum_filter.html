@@ -1,7 +1,7 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    <h1> Petroleum prices for period</h1>
+    <h1> Petroleum prices </h1>
 
     <form action="" method="get">
         {{ filter.form.as_p }}
@@ -18,13 +18,13 @@
           </tr>
         </thead>
         <tbody>
-          {% for object in filter.qs %}
+          {% for petroleums in filter.qs %}
           <tr>
-            <td>{{ object.day }}</td>
-            <td>{{ object.product_key.sort }}</td>
-            <td>{{ object.basis.name }}</td>
-            <td>{{ object.volume }}</td>
-            <td>{{ object.price }}</td>
+            <td>{{ petroleums.day }}</td>
+            <td>{{ petroleums.product_key.sort }}</td>
+            <td>{{ petroleums.basis.name }}</td>
+            <td>{{ petroleums.volume }}</td>
+            <td>{{ petroleums.price }}</td>
           </tr>
           {% endfor %}
         </tbody>

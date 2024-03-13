@@ -1,9 +1,9 @@
 from collections import defaultdict
 from prices_analyzer.converters import PetroleumConverter
 
-from prices_analyzer.shemas import PetroleumSchema, ProductSchema, ProductKeySchema
+from prices_analyzer.schemas import PetroleumSchema, ProductSchema, ProductKeySchema
 from prices_analyzer.models import Basis, Petroleum, ProductKey
-from spimex_parser.shemas import ContractSchema, TradeDaySchema
+from spimex_parser.schemas import ContractSchema, TradeDaySchema
 
 
 def get_product_key(contract: ContractSchema) -> ProductKeySchema:
@@ -58,8 +58,8 @@ def get_products_from_trade_day(trade_day: TradeDaySchema) -> list[ProductSchema
 
 
 def get_petroleums_from_products(products: list[ProductSchema]) -> list[PetroleumSchema]:
+    ''' В случае загрузки из внешних json файлов дополнительно запустить converter.load()'''
     converter = PetroleumConverter()
-    converter.load()
     return [converter.convert(product) for product in products]
 
 
@@ -72,9 +72,9 @@ def save_product_key_base_to_db(petroleum: PetroleumSchema) -> tuple[ProductKey,
 
 
 def save_basis_to_db(product_key: ProductKeySchema) -> tuple[Basis, bool]:
-    obj, created = Basis.objects.get_or_create(
+    obj, created = Basis.objects.update_or_create(
+        defaults={'code': product_key.base, 'name': product_key.base_name},
         code=product_key.base,
-        name=product_key.base_name
         )
     return obj, created
 

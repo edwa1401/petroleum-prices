@@ -1,0 +1,15 @@
+meta {
+  name: create_rail_tariff_for_depot_id
+  type: http
+  seq: 12
+}
+
+get {
+  url: http://127.0.0.1:8000/rail/tarif/create/?depot_id=60
+  body: none
+  auth: none
+}
+
+query {
+  depot_id: 60
+}
