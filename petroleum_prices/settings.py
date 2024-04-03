@@ -178,7 +178,7 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_CACHE_BACKEND = 'django-cache'
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
-CELERYD_OPTS="--time-limit==3600 -E --loglevel=DEBUG"
+CELERYD_OPTS = "--time-limit==3600 -E --loglevel=DEBUG"
 
 
 LOGGING = {
