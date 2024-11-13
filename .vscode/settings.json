@@ -5,7 +5,7 @@
 
     "python.linting.flake8Enabled": false,
     "python.linting.pylintEnabled": false,
-    "ruff.interpreter": [".venv/bin/python"],
+    "ruff.interpreter": ["${workspaceFolder}/.venv/bin/python"],
 
     "python.linting.mypyEnabled": false,
     "mypy.dmypyExecutable": "${workspaceFolder}/.venv/bin/dmypy",
