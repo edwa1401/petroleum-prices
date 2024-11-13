@@ -1,5 +1,7 @@
 from django.contrib import admin
-from prices_analyzer.models import ProductionPlace, Basis, Depot, ProductKey, Petroleum, Prices
+
+from prices_analyzer.models import (Basis, Depot, Petroleum, Prices,
+                                    ProductionPlace, ProductKey)
 
 
 class ProdictionPlaceAdmin(admin.ModelAdmin):

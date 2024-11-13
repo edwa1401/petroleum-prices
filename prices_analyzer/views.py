@@ -135,15 +135,13 @@ def create_prices_view(request: HttpRequest) -> HttpResponse:
     raw_day = request.GET.get('day')
     if not raw_day:
         return HttpResponseBadRequest('should be day')
-    
+
+
     day = datetime.datetime.strptime(raw_day, '%Y-%m-%d')
 
     create_prices_for_all_depots_for_day(day)
     result = 'success'
 
     return HttpResponse(result)
-
-
-
 
 
